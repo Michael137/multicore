@@ -1,5 +1,5 @@
 LDFLAGS=-lpthread
-CXXFLAGS += -O2 -DSINGLE_CORE=$(SINGLE_CORE)
+CXXFLAGS += -O2
 
 .PHONY:
 all: clean compile
