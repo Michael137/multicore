@@ -10,3 +10,4 @@ compile: harness.c
 clean:
 	rm -f harness.out
 	rm -f *.result
+	rm -f *.info
