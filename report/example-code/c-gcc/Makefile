@@ -1,11 +1,5 @@
 LDFLAGS=-lpthread
-CXXFLAGS=
-
-ifeq "$(DEBUG)" "1"
-	CXXFLAGS += -g -O0
-else
-	CXXFLAGS += -O2
-endif
+CXXFLAGS += -O2 -DSINGLE_CORE=$(SINGLE_CORE)
 
 .PHONY:
 all: clean compile
@@ -15,3 +9,4 @@ compile: harness.c
 
 clean:
 	rm -f harness.out
+	rm -f *.result
