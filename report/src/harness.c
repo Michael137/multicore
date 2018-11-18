@@ -104,7 +104,7 @@ thread_sum_unlim_fn( void* arg )
 	thread_info* t_info = arg;
 	if( t_info->run_on_single_core ) schedule_on_core();
 
-	//printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
+	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
 	while( 1 ) {
 		cond_lock_ro();
 		log_thread( t_info );
@@ -120,7 +120,7 @@ thread_sum_fn( void* arg )
 	thread_info* t_info = arg;
 	if( t_info->run_on_single_core ) schedule_on_core();
 
-	//printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
+	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
 	int i;
 	for( i = 0; i < t_info->thread_arg; ++i ) {
 		cond_lock_ro();
@@ -128,7 +128,7 @@ thread_sum_fn( void* arg )
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
 		cond_unlock_ro();
 	}
-	//printf( "Called from: DONE%ld\n", t_info->thread_id );
+	// printf( "Called from: DONE%ld\n", t_info->thread_id );
 
 	return NULL;
 }
@@ -152,7 +152,7 @@ int main( int argc, char** argv )
 	// TODO: use getopt
 
 	int num_threads = atoi( argv[1] );
-	// printf( "Spawning %d threads\n", num_threads );
+	printf( "Spawning %d threads\n", num_threads );
 
 	thread_info* tinfo;
 	tinfo = calloc( num_threads, sizeof( thread_info ) );
@@ -178,7 +178,7 @@ int main( int argc, char** argv )
 	tret = pthread_create( &( tinfo[0].thread_id ), NULL, &thread_sum_fn,
 						   &tinfo[0] );
 
-	//printf( "Functions: %p\n", &thread_sum_fn, &thread_sum_unlim_fn );
+	// printf( "Functions: %p\n", &thread_sum_fn, &thread_sum_unlim_fn );
 
 	for( i = 1; i < num_threads; ++i ) {
 		tinfo[i].thread_num = i;
@@ -192,8 +192,8 @@ int main( int argc, char** argv )
 
 	tret = pthread_join( tinfo[0].thread_id, &res );
 
-	//	printf( "Thread %d finished. Cancelling other threads now...\n",
-	//			tinfo[0].thread_num );
+	printf( "Thread %d finished. Cancelling other threads now...\n",
+			tinfo[0].thread_num );
 	for( i = 1; i < num_threads; ++i ) {
 		pthread_cancel( tinfo[i].thread_id );
 	}
