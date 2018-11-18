@@ -34,8 +34,8 @@ void cond_lock()
 #elif USE_RW_TATAS
 	do {
 		int old = global_tatas_lock;
-		if( ( old >= 0 ) && ( __sync_val_compare_and_swap( &global_tatas_lock,
-														   old, old + 1 ) ) )
+		if( ( old >= 0 ) && ( __sync_bool_compare_and_swap( &global_tatas_lock,
+															old, old + 1 ) ) )
 			break;
 	} while( 1 );
 #endif
@@ -93,8 +93,8 @@ static void* thread_sum_unlim_fn( void* arg )
 	if( t_info->run_on_single_core ) schedule_on_core();
 
 	while( 1 ) {
-		cond_lock();
 		// printf( "Called from: %d\n", ( (thread_info*)arg )->thread_num );
+		cond_lock();
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
 		cond_unlock();
 	}
@@ -108,8 +108,8 @@ static void* thread_sum_fn( void* arg )
 
 	int i;
 	for( i = 0; i < t_info->thread_arg; ++i ) {
-		cond_lock();
 		// printf( "Called from: %d\n", ( (thread_info*)arg )->thread_num );
+		cond_lock();
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
 		cond_unlock();
 	}
