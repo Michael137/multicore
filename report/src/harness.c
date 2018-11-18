@@ -10,6 +10,7 @@
 #define SUM_LOOP_NUM 100000
 void sum_array( int* arr, size_t sz );
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
+volatile int global_tatas_lock = 0;
 
 typedef struct thread_info
 {
@@ -25,6 +26,18 @@ void cond_lock()
 {
 #ifdef USE_MUTEX
 	pthread_mutex_lock( &shared_arr_mutex );
+#elif USE_TATAS
+	do {
+		while( global_tatas_lock ) {
+		}
+	} while( __sync_lock_test_and_set( &global_tatas_lock, 1 ) );
+#elif USE_RW_TATAS
+	do {
+		int old = global_tatas_lock;
+		if( ( old >= 0 ) && ( __sync_val_compare_and_swap( &global_tatas_lock,
+														   old, old + 1 ) ) )
+			break;
+	} while( 1 );
 #endif
 }
 
@@ -32,6 +45,10 @@ void cond_unlock()
 {
 #ifdef USE_MUTEX
 	pthread_mutex_unlock( &shared_arr_mutex );
+#elif USE_TATAS
+	global_tatas_lock = 0;
+#elif USE_RW_TATAS
+	__sync_fetch_and_add( &global_tatas_lock, -1 );
 #endif
 }
 
@@ -115,6 +132,7 @@ sum_array( int* arr, size_t sz )
 // 3: run on single core
 int main( int argc, char** argv )
 {
+	srand( time( NULL ) );
 	// TODO: use getopt
 
 	int num_threads = atoi( argv[1] );
@@ -129,7 +147,7 @@ int main( int argc, char** argv )
 	int* shared_arr = malloc( sizeof( int ) );
 	int j;
 	for( j = 0; j < shared_data_sz; ++j )
-		shared_arr[j] = j;
+		shared_arr[j] = rand() % ( shared_data_sz * 5 );
 
 	int i, tret;
 	void* res;
