@@ -7,10 +7,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SUM_LOOP_NUM 100000
+#define SUM_LOOP_NUM 30000
 void sum_array( int* arr, size_t sz );
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
 volatile int global_tatas_lock = 0;
+volatile int* global_rw_locks = NULL;
 
 typedef struct thread_info
 {
@@ -22,7 +23,7 @@ typedef struct thread_info
 	int run_on_single_core;
 } thread_info;
 
-void cond_lock()
+void cond_lock_ro()
 {
 #ifdef USE_MUTEX
 	pthread_mutex_lock( &shared_arr_mutex );
@@ -38,10 +39,12 @@ void cond_lock()
 															old, old + 1 ) ) )
 			break;
 	} while( 1 );
+#elif USE_FLAG_RW // flag-based reader-writer lock
+
 #endif
 }
 
-void cond_unlock()
+void cond_unlock_ro()
 {
 #ifdef USE_MUTEX
 	pthread_mutex_unlock( &shared_arr_mutex );
@@ -49,6 +52,7 @@ void cond_unlock()
 	global_tatas_lock = 0;
 #elif USE_RW_TATAS
 	__sync_fetch_and_add( &global_tatas_lock, -1 );
+#elif USE_FLAG_RW // flag-based reader-writer lock
 #endif
 }
 
@@ -94,9 +98,9 @@ static void* thread_sum_unlim_fn( void* arg )
 
 	while( 1 ) {
 		// printf( "Called from: %d\n", ( (thread_info*)arg )->thread_num );
-		cond_lock();
+		cond_lock_ro();
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
-		cond_unlock();
+		cond_unlock_ro();
 	}
 	return NULL;
 }
@@ -109,9 +113,9 @@ static void* thread_sum_fn( void* arg )
 	int i;
 	for( i = 0; i < t_info->thread_arg; ++i ) {
 		// printf( "Called from: %d\n", ( (thread_info*)arg )->thread_num );
-		cond_lock();
+		cond_lock_ro();
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
-		cond_unlock();
+		cond_unlock_ro();
 	}
 
 	return NULL;
@@ -149,6 +153,9 @@ int main( int argc, char** argv )
 	for( j = 0; j < shared_data_sz; ++j )
 		shared_arr[j] = rand() % ( shared_data_sz * 5 );
 
+	/* Initialize global reader-writer flags */
+	global_rw_locks = calloc( num_threads, sizeof( int ) );
+
 	int i, tret;
 	void* res;
 	tinfo[0].thread_num = 0;
@@ -185,6 +192,7 @@ int main( int argc, char** argv )
 
 	free( tinfo );
 	free( shared_arr );
+	free( (int*)global_rw_locks );
 
 	return 0;
 }
