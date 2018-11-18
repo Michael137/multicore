@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SUM_LOOP_NUM 7500
+#define SUM_LOOP_NUM 20000
 void sum_array( int* arr, size_t sz );
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
 volatile int global_tatas_lock = 0;
@@ -52,8 +52,8 @@ void cond_lock_ro( thread_info** ti )
 	} while( 1 );
 #elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
 	int n = ( *ti )->number_of_threads;
-	int old_tail = __sync_fetch_and_add( &global_rw_tail, 1 );
-	int slot = ( *ti )->rw_slot = ( old_tail + 1 ) % n;
+	int old_tail = __sync_fetch_and_add( &global_rw_tail, 1 * 4 );
+	int slot = ( *ti )->rw_slot = ( ( old_tail + 1 * 4 ) ) % n;
 	while( !global_rw_flags[slot] ) {
 		// spin
 		//		printf( "Thread %d: Waiting in slot %d tail %d\n", ( *ti
@@ -72,10 +72,12 @@ void cond_unlock_ro( thread_info** ti )
 	__sync_fetch_and_add( &global_tatas_lock, -1 );
 #elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
 	int n = ( *ti )->number_of_threads;
-	int slot = ( *ti )->rw_slot;
+	int slot = ( *ti )->rw_slot; // * 4 for padding
 	global_rw_flags[slot] = 0;
-	global_rw_flags[( slot + 1 ) % n] = 1;
-	// puts("Unlocking");
+	global_rw_flags[( slot + 1 * 4 ) % n] = 1;
+#ifdef DEBUG
+	printf( "Unlocking %d\n", ( *ti )->thread_num );
+#endif
 #endif
 }
 
@@ -213,8 +215,8 @@ int main( int argc, char** argv )
 
 	tret = pthread_join( tinfo[0].thread_id, &res );
 
-	printf( "Thread %d finished. Cancelling other threads now...\n",
-			tinfo[0].thread_num );
+	//printf( "Thread %d finished. Cancelling other threads now...\n",
+	//		tinfo[0].thread_num );
 	for( i = 1; i < num_threads; ++i ) {
 		pthread_cancel( tinfo[i].thread_id );
 	}
