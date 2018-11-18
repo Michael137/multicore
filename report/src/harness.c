@@ -7,11 +7,13 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SUM_LOOP_NUM 30000
+#define SUM_LOOP_NUM 7500
 void sum_array( int* arr, size_t sz );
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
 volatile int global_tatas_lock = 0;
-volatile int* global_rw_locks = NULL;
+
+volatile int* global_rw_flags = NULL;
+volatile int global_rw_tail = 0;
 
 typedef struct thread_info
 {
@@ -21,6 +23,8 @@ typedef struct thread_info
 	int shared_data_sz;
 	int** shared_data;
 	int run_on_single_core;
+	int rw_slot;
+	int number_of_threads;
 } thread_info;
 
 void log_thread( thread_info* ti )
@@ -30,7 +34,7 @@ void log_thread( thread_info* ti )
 #endif
 }
 
-void cond_lock_ro()
+void cond_lock_ro( thread_info** ti )
 {
 #ifdef USE_MUTEX
 	pthread_mutex_lock( &shared_arr_mutex );
@@ -46,12 +50,19 @@ void cond_lock_ro()
 															old, old + 1 ) ) )
 			break;
 	} while( 1 );
-#elif USE_FLAG_RW // flag-based reader-writer lock
-
+#elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
+	int n = ( *ti )->number_of_threads;
+	int old_tail = __sync_fetch_and_add( &global_rw_tail, 1 );
+	int slot = ( *ti )->rw_slot = ( old_tail + 1 ) % n;
+	while( !global_rw_flags[slot] ) {
+		// spin
+		//		printf( "Thread %d: Waiting in slot %d tail %d\n", ( *ti
+		//)->thread_num, 		slot, global_rw_tail );
+	}
 #endif
 }
 
-void cond_unlock_ro()
+void cond_unlock_ro( thread_info** ti )
 {
 #ifdef USE_MUTEX
 	pthread_mutex_unlock( &shared_arr_mutex );
@@ -59,7 +70,12 @@ void cond_unlock_ro()
 	global_tatas_lock = 0;
 #elif USE_RW_TATAS
 	__sync_fetch_and_add( &global_tatas_lock, -1 );
-#elif USE_FLAG_RW // flag-based reader-writer lock
+#elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
+	int n = ( *ti )->number_of_threads;
+	int slot = ( *ti )->rw_slot;
+	global_rw_flags[slot] = 0;
+	global_rw_flags[( slot + 1 ) % n] = 1;
+	// puts("Unlocking");
 #endif
 }
 
@@ -106,10 +122,10 @@ thread_sum_unlim_fn( void* arg )
 
 	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
 	while( 1 ) {
-		cond_lock_ro();
+		cond_lock_ro( &t_info );
 		log_thread( t_info );
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
-		cond_unlock_ro();
+		cond_unlock_ro( &t_info );
 	}
 	return NULL;
 }
@@ -123,10 +139,10 @@ thread_sum_fn( void* arg )
 	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
 	int i;
 	for( i = 0; i < t_info->thread_arg; ++i ) {
-		cond_lock_ro();
+		cond_lock_ro( &t_info );
 		log_thread( t_info );
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
-		cond_unlock_ro();
+		cond_unlock_ro( &t_info );
 	}
 	// printf( "Called from: DONE%ld\n", t_info->thread_id );
 
@@ -166,7 +182,8 @@ int main( int argc, char** argv )
 		shared_arr[j] = rand() % ( shared_data_sz * 5 );
 
 	/* Initialize global reader-writer flags */
-	global_rw_locks = calloc( num_threads, sizeof( int ) );
+	global_rw_flags = calloc( num_threads, sizeof( int ) );
+	global_rw_flags[0] = 1; // First flag available
 
 	int i, tret;
 	void* res;
@@ -175,6 +192,8 @@ int main( int argc, char** argv )
 	tinfo[0].run_on_single_core = atoi( argv[3] );
 	tinfo[0].shared_data = &shared_arr;
 	tinfo[0].shared_data_sz = shared_data_sz;
+	tinfo[0].rw_slot = 0;
+	tinfo[0].number_of_threads = num_threads;
 	tret = pthread_create( &( tinfo[0].thread_id ), NULL, &thread_sum_fn,
 						   &tinfo[0] );
 
@@ -186,6 +205,8 @@ int main( int argc, char** argv )
 		tinfo[i].run_on_single_core = atoi( argv[3] );
 		tinfo[i].shared_data = &shared_arr;
 		tinfo[i].shared_data_sz = shared_data_sz;
+		tinfo[i].rw_slot = 0;
+		tinfo[i].number_of_threads = num_threads;
 		tret = pthread_create( &( tinfo[i].thread_id ), NULL,
 							   &thread_sum_unlim_fn, &tinfo[i] );
 	}
@@ -209,7 +230,7 @@ int main( int argc, char** argv )
 
 	free( tinfo );
 	free( shared_arr );
-	free( (int*)global_rw_locks );
+	free( (int*)global_rw_flags );
 
 	return 0;
 }
