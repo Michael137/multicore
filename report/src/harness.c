@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define SUM_LOOP_NUM 750000
+#define SUM_LOOP_NUM 100000
 void sum_array( int* arr, size_t sz );
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -20,6 +20,20 @@ typedef struct thread_info
 	int** shared_data;
 	int run_on_single_core;
 } thread_info;
+
+void cond_lock()
+{
+#ifdef USE_MUTEX
+	pthread_mutex_lock( &shared_arr_mutex );
+#endif
+}
+
+void cond_unlock()
+{
+#ifdef USE_MUTEX
+	pthread_mutex_unlock( &shared_arr_mutex );
+#endif
+}
 
 // 1s = 3800
 static __attribute__( ( noinline ) ) __attribute__( ( optimize( "O0" ) ) ) int
@@ -62,10 +76,10 @@ static void* thread_sum_unlim_fn( void* arg )
 	if( t_info->run_on_single_core ) schedule_on_core();
 
 	while( 1 ) {
-		pthread_mutex_lock( &shared_arr_mutex );
+		cond_lock();
+		// printf( "Called from: %d\n", ( (thread_info*)arg )->thread_num );
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
-		//		printf( "Called from: %d\n", ((thread_info*)arg)->thread_num );
-		pthread_mutex_unlock( &shared_arr_mutex );
+		cond_unlock();
 	}
 	return NULL;
 }
@@ -77,10 +91,12 @@ static void* thread_sum_fn( void* arg )
 
 	int i;
 	for( i = 0; i < t_info->thread_arg; ++i ) {
-		pthread_mutex_lock( &shared_arr_mutex );
+		cond_lock();
+		// printf( "Called from: %d\n", ( (thread_info*)arg )->thread_num );
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
-		pthread_mutex_unlock( &shared_arr_mutex );
+		cond_unlock();
 	}
+
 	return NULL;
 }
 

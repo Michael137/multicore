@@ -1,5 +1,9 @@
 LDFLAGS=-lpthread
-CXXFLAGS += -O2
+CXXFLAGS += -O2 # -fsanitize=thread
+
+ifeq "$(USE_MUTEX)" "1"
+CXXFLAGS += -DUSE_MUTEX
+endif
 
 .PHONY:
 all: clean compile
