@@ -1,4 +1,4 @@
-LDFLAGS=-lpthread
+LDFLAGS=-pthread
 CXXFLAGS += -O2 # -fsanitize=thread
 
 ifeq "$(DEBUG)" "1"
