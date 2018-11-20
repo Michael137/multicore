@@ -2,18 +2,20 @@
 #include <assert.h>
 #include <pthread.h>
 #include <sched.h>
+#include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#define SUM_LOOP_NUM 20000
+#define SUM_LOOP_NUM 10000
 void sum_array( int* arr, size_t sz );
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
-volatile int global_tatas_lock = 0;
+volatile sig_atomic_t global_tatas_lock = 0;
 
 volatile int* global_rw_flags = NULL;
-volatile int global_rw_tail = 0;
+volatile sig_atomic_t global_rw_tail = 0;
+volatile sig_atomic_t first_thread_complete = 0;
 
 typedef struct thread_info
 {
@@ -51,7 +53,7 @@ void cond_lock_ro( thread_info** ti )
 			break;
 	} while( 1 );
 #elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
-	// Based on: 
+	// Based on:
 	// https://geidav.wordpress.com/2016/12/03/scalable-spinlocks-1-array-based/
 	// https://www.csd.uoc.gr/~hy586/material/lectures/cs586-Section3.pdf
 	// Art of Multiprocessor Programming Ch. 7.5.1
@@ -76,7 +78,7 @@ void cond_unlock_ro( thread_info** ti )
 	__sync_fetch_and_add( &global_tatas_lock, -1 );
 #elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
 	int n = ( *ti )->number_of_threads;
-	int slot = ( *ti )->rw_slot; // * 4 for padding
+	int slot = ( *ti )->rw_slot;
 	global_rw_flags[slot] = 0;
 	global_rw_flags[( slot + 1 * 4 ) % n] = 1;
 #ifdef DEBUG
@@ -127,7 +129,7 @@ thread_sum_unlim_fn( void* arg )
 	if( t_info->run_on_single_core ) schedule_on_core();
 
 	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
-	while( 1 ) {
+	while( 1/*!first_thread_complete*/ ) {
 		cond_lock_ro( &t_info );
 		log_thread( t_info );
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
@@ -139,6 +141,7 @@ thread_sum_unlim_fn( void* arg )
 static void* __attribute__( ( noinline ) ) __attribute__( ( optimize( "O0" ) ) )
 thread_sum_fn( void* arg )
 {
+	pthread_setcanceltype( PTHREAD_CANCEL_ASYNCHRONOUS, NULL );
 	thread_info* t_info = arg;
 	if( t_info->run_on_single_core ) schedule_on_core();
 
@@ -179,8 +182,6 @@ int main( int argc, char** argv )
 	thread_info* tinfo;
 	tinfo = calloc( num_threads, sizeof( thread_info ) );
 
-	pthread_setcanceltype( PTHREAD_CANCEL_ASYNCHRONOUS, NULL );
-
 	int shared_data_sz = atoi( argv[2] );
 	int* shared_arr = malloc( sizeof( int ) );
 	int j;
@@ -188,8 +189,10 @@ int main( int argc, char** argv )
 		shared_arr[j] = rand() % ( shared_data_sz * 5 );
 
 	/* Initialize global reader-writer flags */
-	global_rw_flags = calloc( num_threads, sizeof( int ) );
-	global_rw_flags[0] = 1; // First flag available
+	// TODO: Fix segfault with and array size == 50000
+	global_rw_flags =
+		calloc( 4 * num_threads, sizeof( int ) ); // * 4 for padding
+	global_rw_flags[0] = 1;						  // First flag available
 
 	int i, tret;
 	void* res;
@@ -218,25 +221,24 @@ int main( int argc, char** argv )
 	}
 
 	tret = pthread_join( tinfo[0].thread_id, &res );
+	//__sync_fetch_and_add( &first_thread_complete, 1 );
 
-	//printf( "Thread %d finished. Cancelling other threads now...\n",
+	// printf( "Thread %d finished. Cancelling other threads now...\n",
 	//		tinfo[0].thread_num );
+	// TODO: add cleanup handler to avoid leaks (flagged by tsan)
 	for( i = 1; i < num_threads; ++i ) {
 		pthread_cancel( tinfo[i].thread_id );
 	}
+
+	//for( i = 1; i < num_threads; ++i )
+	//{
+	//	tret = pthread_join( tinfo[i].thread_id, &res );
+	//}
+
 	free( res );
-
-	//		for( i = 0; i < num_threads; ++i ) {
-	//			tret = pthread_join( tinfo[i].thread_id, &res );
-	//			// printf( "Joined with thread %d; returned value was:
-	//%s\n",
-	//			// tinfo[i].thread_num, (char*)res );
-	//			free( res );
-	//		}
-
-	free( tinfo );
 	free( shared_arr );
 	free( (int*)global_rw_flags );
+	free( tinfo );
 
 	return 0;
 }

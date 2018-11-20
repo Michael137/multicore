@@ -1,8 +1,10 @@
 LDFLAGS=-pthread
-CXXFLAGS += -O2 # -fsanitize=thread
+CXXFLAGS=
 
 ifeq "$(DEBUG)" "1"
-CXXFLAGS += -g -O0 -DDEBUG
+CXXFLAGS += -g -O0 -fsanitize=thread -DDEBUG
+else
+CXXFLAGS += -O2
 endif
 
 ifeq "$(USE_MUTEX)" "1"
