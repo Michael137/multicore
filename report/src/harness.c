@@ -51,6 +51,10 @@ void cond_lock_ro( thread_info** ti )
 			break;
 	} while( 1 );
 #elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
+	// Based on: 
+	// https://geidav.wordpress.com/2016/12/03/scalable-spinlocks-1-array-based/
+	// https://www.csd.uoc.gr/~hy586/material/lectures/cs586-Section3.pdf
+	// Art of Multiprocessor Programming Ch. 7.5.1
 	int n = ( *ti )->number_of_threads;
 	int old_tail = __sync_fetch_and_add( &global_rw_tail, 1 * 4 );
 	int slot = ( *ti )->rw_slot = ( ( old_tail + 1 * 4 ) ) % n;
