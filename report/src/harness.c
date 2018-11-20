@@ -183,7 +183,7 @@ int main( int argc, char** argv )
 	tinfo = calloc( num_threads, sizeof( thread_info ) );
 
 	int shared_data_sz = atoi( argv[2] );
-	int* shared_arr = malloc( sizeof( int ) );
+	int* shared_arr = malloc( shared_data_sz * sizeof( int ) );
 	int j;
 	for( j = 0; j < shared_data_sz; ++j )
 		shared_arr[j] = rand() % ( shared_data_sz * 5 );
