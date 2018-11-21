@@ -10,5 +10,5 @@ echo "Writing results to file: ${OUT_FILE}"
 echo 0 0 > $OUT_FILE
 for i in `seq 1 $THREADS_NUM`
 do
-	(time -f "$i %e" ./harness.out $i ${SHARED_SIZE} ${SINGLE_CORE} | grep -Ev 'S') >> $OUT_FILE 2>&1
+	(time -f "$i %e" ./harness.out $i ${SHARED_SIZE} ${SINGLE_CORE} ${READ_WRITE} | grep -Ev 'S') >> $OUT_FILE 2>&1
 done

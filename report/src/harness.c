@@ -16,6 +16,8 @@ volatile sig_atomic_t global_tatas_lock = 0;
 volatile int* global_rw_flags = NULL;
 volatile sig_atomic_t global_rw_tail = 0;
 volatile sig_atomic_t first_thread_complete = 0;
+volatile int operation_ctr = 0; // TODO: might need to move to thread_local or add synchronization
+								// TODO: make sure it approximately causes correct number of writes
 
 typedef struct thread_info
 {
@@ -27,6 +29,7 @@ typedef struct thread_info
 	int run_on_single_core;
 	int rw_slot;
 	int number_of_threads;
+	int ops_until_write;
 } thread_info;
 
 void log_thread( thread_info* ti )
@@ -87,6 +90,55 @@ void cond_unlock_ro( thread_info** ti )
 #endif
 }
 
+void cond_lock_rw( thread_info** ti)
+{
+#ifdef USE_MUTEX
+	pthread_mutex_lock( &shared_arr_mutex );
+#elif USE_TATAS
+	do {
+		while( global_tatas_lock ) {
+		}
+	} while( __sync_lock_test_and_set( &global_tatas_lock, 1 ) );
+#elif USE_RW_TATAS
+	do {
+		if(( global_tatas_lock == 0 ) &&
+			__sync_bool_compare_and_swap( &global_tatas_lock, 0, -1 ))
+			break;
+	} while( 1 );
+#elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
+#endif
+}
+
+void cond_unlock_rw( thread_info** ti)
+{
+#ifdef USE_MUTEX
+	pthread_mutex_unlock( &shared_arr_mutex );
+#elif USE_TATAS
+	global_tatas_lock = 0;
+#elif USE_RW_TATAS
+	global_tatas_lock = 0;
+#elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
+
+#endif
+}
+
+void lock( thread_info** ti)
+{
+	if(operation_ctr >= (*ti)->ops_until_write)
+		cond_lock_rw( ti );
+	else
+		cond_lock_ro( ti );
+}
+
+void unlock( thread_info** ti)
+{
+	if(operation_ctr >= (*ti)->ops_until_write) {
+		cond_unlock_rw( ti );
+		operation_ctr = 0;
+	} else
+		cond_unlock_ro( ti );
+}
+
 // 1s = 3800
 static __attribute__( ( noinline ) ) __attribute__( ( optimize( "O0" ) ) ) int
 delay( int d )
@@ -130,10 +182,10 @@ thread_sum_unlim_fn( void* arg )
 
 	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
 	while( 1/*!first_thread_complete*/ ) {
-		cond_lock_ro( &t_info );
+		lock( &t_info );
 		log_thread( t_info );
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
-		cond_unlock_ro( &t_info );
+		unlock( &t_info );
 	}
 	return NULL;
 }
@@ -148,10 +200,10 @@ thread_sum_fn( void* arg )
 	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
 	int i;
 	for( i = 0; i < t_info->thread_arg; ++i ) {
-		cond_lock_ro( &t_info );
+		lock( &t_info );
 		log_thread( t_info );
 		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
-		cond_unlock_ro( &t_info );
+		unlock( &t_info );
 	}
 	// printf( "Called from: DONE%ld\n", t_info->thread_id );
 
@@ -166,6 +218,8 @@ sum_array( int* arr, size_t sz )
 	for( i = 0; i < sz; ++i ) {
 		sum += arr[i];
 	}
+
+	operation_ctr++;
 }
 
 // 1: number of threads
@@ -189,7 +243,6 @@ int main( int argc, char** argv )
 		shared_arr[j] = rand() % ( shared_data_sz * 5 );
 
 	/* Initialize global reader-writer flags */
-	// TODO: Fix segfault with and array size == 50000
 	global_rw_flags =
 		calloc( 4 * num_threads, sizeof( int ) ); // * 4 for padding
 	global_rw_flags[0] = 1;						  // First flag available
@@ -203,6 +256,7 @@ int main( int argc, char** argv )
 	tinfo[0].shared_data_sz = shared_data_sz;
 	tinfo[0].rw_slot = 0;
 	tinfo[0].number_of_threads = num_threads;
+	tinfo[0].ops_until_write = atoi( argv[4] );
 	tret = pthread_create( &( tinfo[0].thread_id ), NULL, &thread_sum_fn,
 						   &tinfo[0] );
 
@@ -215,7 +269,7 @@ int main( int argc, char** argv )
 		tinfo[i].shared_data = &shared_arr;
 		tinfo[i].shared_data_sz = shared_data_sz;
 		tinfo[i].rw_slot = 0;
-		tinfo[i].number_of_threads = num_threads;
+		tinfo[i].ops_until_write = atoi( argv[4] );
 		tret = pthread_create( &( tinfo[i].thread_id ), NULL,
 							   &thread_sum_unlim_fn, &tinfo[i] );
 	}
