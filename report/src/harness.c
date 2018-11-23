@@ -7,9 +7,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <xmmintrin.h> // _mm_pause
 
 #define SUM_LOOP_NUM 10000
-void sum_array( int* arr, size_t sz );
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
 volatile sig_atomic_t global_tatas_lock = 0;
 
@@ -34,6 +34,12 @@ typedef struct thread_info
 	int operation_ctr;
 } thread_info;
 
+void sum_array( int* arr, size_t sz );
+void cond_unlock_rw( thread_info** ti );
+void cond_lock_rw( thread_info** ti );
+void cond_unlock_ro( thread_info** ti );
+void cond_lock_ro( thread_info** ti );
+
 void log_thread( thread_info* ti )
 {
 #ifdef DEBUG
@@ -48,6 +54,8 @@ void cond_lock_ro( thread_info** ti )
 #elif USE_TATAS
 	do {
 		while( global_tatas_lock ) {
+			// spin
+			_mm_pause();
 		}
 	} while( __sync_lock_test_and_set( &global_tatas_lock, 1 ) );
 #elif USE_RW_TATAS
@@ -57,19 +65,10 @@ void cond_lock_ro( thread_info** ti )
 															old, old + 1 ) ) )
 			break;
 	} while( 1 );
-#elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
-	// Based on:
-	// https://geidav.wordpress.com/2016/12/03/scalable-spinlocks-1-array-based/
-	// https://www.csd.uoc.gr/~hy586/material/lectures/cs586-Section3.pdf
-	// Art of Multiprocessor Programming Ch. 7.5.1
-	int n = ( *ti )->number_of_threads;
-	int old_tail = __sync_fetch_and_add( &global_rw_tail, 1 * 4 );
-	int slot = ( *ti )->rw_slot = ( ( old_tail + 1 * 4 ) ) % n;
-	while( !global_rw_flags[slot] ) {
-		// spin
-		//		printf( "Thread %d: Waiting in slot %d tail %d\n", ( *ti
-		//)->thread_num, 		slot, global_rw_tail );
-	}
+#elif USE_ANDERSON // flag-based reader-writer lock (array-based lock)
+				   // TODO: fix FPE
+	cond_lock_rw( ti );
+#elif USE_RW_ARRAY
 #endif
 }
 
@@ -78,17 +77,12 @@ void cond_unlock_ro( thread_info** ti )
 #ifdef USE_MUTEX
 	pthread_mutex_unlock( &shared_arr_mutex );
 #elif USE_TATAS
-	global_tatas_lock = 0;
+	__sync_lock_release( &global_tatas_lock );
 #elif USE_RW_TATAS
 	__sync_fetch_and_add( &global_tatas_lock, -1 );
-#elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
-	int n = ( *ti )->number_of_threads;
-	int slot = ( *ti )->rw_slot;
-	global_rw_flags[slot] = 0;
-	global_rw_flags[( slot + 1 * 4 ) % n] = 1;
-#ifdef DEBUG
-	printf( "Unlocking %d\n", ( *ti )->thread_num );
-#endif
+#elif USE_ANDERSON // flag-based reader-writer lock (array-based lock)
+#elif USE_RW_ARRAY
+	cond_unlock_rw();
 #endif
 }
 
@@ -99,6 +93,8 @@ void cond_lock_rw( thread_info** ti )
 #elif USE_TATAS
 	do {
 		while( global_tatas_lock ) {
+			// spin
+			_mm_pause();
 		}
 	} while( __sync_lock_test_and_set( &global_tatas_lock, 1 ) );
 #elif USE_RW_TATAS
@@ -107,7 +103,19 @@ void cond_lock_rw( thread_info** ti )
 			__sync_bool_compare_and_swap( &global_tatas_lock, 0, -1 ) )
 			break;
 	} while( 1 );
-#elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
+#elif USE_ANDERSON // flag-based reader-writer lock (array-based lock)
+	// Based on:
+	// https://geidav.wordpress.com/2016/12/03/scalable-spinlocks-1-array-based/
+	// https://www.csd.uoc.gr/~hy586/material/lectures/cs586-Section3.pdf
+	// Art of Multiprocessor Programming Ch. 7.5.1
+	int n = ( *ti )->number_of_threads;
+	int old_tail = __sync_fetch_and_add( &global_rw_tail, 1 * 4 );
+	int slot = ( *ti )->rw_slot = ( ( old_tail + 1 * 4 ) ) % n;
+	while( !global_rw_flags[slot] ) {
+		// spin
+		_mm_pause();
+	}
+#elif USE_RW_ARRAY
 #endif
 }
 
@@ -116,17 +124,25 @@ void cond_unlock_rw( thread_info** ti )
 #ifdef USE_MUTEX
 	pthread_mutex_unlock( &shared_arr_mutex );
 #elif USE_TATAS
-	global_tatas_lock = 0;
+	__sync_lock_release( &global_tatas_lock );
 #elif USE_RW_TATAS
 	global_tatas_lock = 0;
-#elif USE_FLAG_RW // flag-based reader-writer lock (array-based lock)
-
+#elif USE_ANDERSON // flag-based reader-writer lock (array-based lock)
+	int n = ( *ti )->number_of_threads;
+	int slot = ( *ti )->rw_slot;
+	global_rw_flags[slot] = 0;
+	global_rw_flags[( slot + 1 * 4 ) % n] = 1;
+#ifdef DEBUG
+	printf( "Unlocking %d\n", ( *ti )->thread_num );
+#endif
+#elif USE_RW_ARRAY
 #endif
 }
 
 void lock( thread_info** ti )
 {
-	if( ( *ti )->operation_ctr >= ( *ti )->ops_until_write )
+	if( ( *ti )->ops_until_write != 0 &&
+		( *ti )->operation_ctr >= ( *ti )->ops_until_write )
 		cond_lock_rw( ti );
 	else
 		cond_lock_ro( ti );
@@ -134,7 +150,8 @@ void lock( thread_info** ti )
 
 void unlock( thread_info** ti )
 {
-	if( ( *ti )->operation_ctr >= ( *ti )->ops_until_write ) {
+	if( ( *ti )->ops_until_write != 0 &&
+		( *ti )->operation_ctr >= ( *ti )->ops_until_write ) {
 		cond_unlock_rw( ti );
 		( *ti )->operation_ctr = 0;
 #ifdef DEBUG
@@ -161,21 +178,16 @@ delay( int d )
 static void* thread_fn( void* arg )
 {
 	thread_info* t_info = arg;
-	//	printf( "Thread running, id %ld, num %d, arg=%d\n", t_info->thread_id,
-	// t_info->thread_num, t_info->thread_arg);
 	delay( t_info->thread_arg );
-	//	printf( "Thread done\n" );
 	return NULL;
 }
 
 void schedule_on_core()
 {
-	cpu_set_t my_set;	  /* Define your cpu_set bit mask. */
-	CPU_ZERO( &my_set );   /* Initialize it all to 0, i.e. no CPUs selected. */
-	CPU_SET( 3, &my_set ); /* set the bit that represents core 7. */
-	sched_setaffinity( 0, sizeof( cpu_set_t ),
-					   &my_set ); /* Set affinity of tihs process to */
-								  /* the defined mask, i.e. only 7. */
+	cpu_set_t my_set;
+	CPU_ZERO( &my_set );
+	CPU_SET( 3, &my_set );
+	sched_setaffinity( 0, sizeof( cpu_set_t ), &my_set );
 }
 
 static void* __attribute__( ( noinline ) ) __attribute__( ( optimize( "O0" ) ) )
@@ -184,7 +196,6 @@ thread_sum_unlim_fn( void* arg )
 	thread_info* t_info = arg;
 	if( t_info->run_on_single_core ) schedule_on_core();
 
-	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
 	while( 1 /*!first_thread_complete*/ ) {
 		lock( &t_info );
 		log_thread( t_info );
@@ -202,7 +213,6 @@ thread_sum_fn( void* arg )
 	thread_info* t_info = arg;
 	if( t_info->run_on_single_core ) schedule_on_core();
 
-	// printf( "Called from: INTHREAD%ld\n", t_info->thread_id );
 	int i;
 	for( i = 0; i < t_info->thread_arg; ++i ) {
 		lock( &t_info );
@@ -211,7 +221,6 @@ thread_sum_fn( void* arg )
 		unlock( &t_info );
 		t_info->operation_ctr++;
 	}
-	// printf( "Called from: DONE%ld\n", t_info->thread_id );
 
 	return NULL;
 }
@@ -229,10 +238,10 @@ sum_array( int* arr, size_t sz )
 // 1: number of threads
 // 2: shared array size
 // 3: run on single core
+// 4: number of operations until a write is to be performed
 int main( int argc, char** argv )
 {
 	srand( time( NULL ) );
-	// TODO: use getopt
 
 	int num_threads = atoi( argv[1] );
 	printf( "Spawning %d threads\n", num_threads );
@@ -265,8 +274,6 @@ int main( int argc, char** argv )
 	tret = pthread_create( &( tinfo[0].thread_id ), NULL, &thread_sum_fn,
 						   &tinfo[0] );
 
-	// printf( "Functions: %p\n", &thread_sum_fn, &thread_sum_unlim_fn );
-
 	for( i = 1; i < num_threads; ++i ) {
 		tinfo[i].thread_num = i;
 		tinfo[i].thread_arg = SUM_LOOP_NUM;
@@ -281,19 +288,11 @@ int main( int argc, char** argv )
 	}
 
 	tret = pthread_join( tinfo[0].thread_id, &res );
-	//__sync_fetch_and_add( &first_thread_complete, 1 );
 
-	// printf( "Thread %d finished. Cancelling other threads now...\n",
-	//		tinfo[0].thread_num );
 	// TODO: add cleanup handler to avoid leaks (flagged by tsan)
 	for( i = 1; i < num_threads; ++i ) {
 		pthread_cancel( tinfo[i].thread_id );
 	}
-
-	// for( i = 1; i < num_threads; ++i )
-	//{
-	//	tret = pthread_join( tinfo[i].thread_id, &res );
-	//}
 
 	free( res );
 	free( shared_arr );

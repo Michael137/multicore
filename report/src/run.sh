@@ -15,6 +15,9 @@ do
 		(time -f "$i %e" ./harness.out $i ${SHARED_SIZE} ${SINGLE_CORE} ${READ_WRITE} | grep -Ev 'S') >> ${OUT_FILE} 2>&1
 		sed -i '/terminated by/c\' ${OUT_FILE}
 	done
+
+	sleep 2
 done
 
 ./collect-times.sh ${OUT_FILE_BASE}
+sleep 10

@@ -23,8 +23,12 @@ ifeq "$(USE_RW_TATAS)" "1"
 CXXFLAGS += -DUSE_RW_TATAS
 endif
 
-ifeq "$(USE_FLAG_RW)" "1"
-CXXFLAGS += -DUSE_FLAG_RW
+ifeq "$(USE_RW_ARRAY)" "1"
+CXXFLAGS += -DUSE_RW_ARRAY
+endif
+
+ifeq "$(USE_ANDERSON)" "1"
+CXXFLAGS += -DUSE_ANDERSON
 endif
 
 .PHONY:
