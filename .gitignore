@@ -2,3 +2,4 @@
 *.result
 *.info
 *.dist
+*.combined
