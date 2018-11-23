@@ -1,0 +1,4 @@
+set term wxt enhanced
+set autoscale
+filelist=system("ls *.combined")
+plot for [f in filelist] f using 1:2 with lines title f

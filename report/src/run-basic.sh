@@ -5,7 +5,6 @@ gcc -O2 -pthread basic.c -o basic.out
 THREADS_NUM=$1
 DELAY=$2
 SLEEP=$3
-echo "Writing results to file: ${OUT_FILE}"
 for j in `seq 1 6`
 do
 	OUT_FILE="basic_${THREADS_NUM}_${DELAY}_sleep${SLEEP}_${j}.result"

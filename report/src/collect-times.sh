@@ -11,3 +11,4 @@ paste -d" " ${FILENAME}_*.result | awk 'BEGIN {FS= " " ; OFS=FS}
 gawk -i inplace '{ for(i=1; i<=NF;i++) j+=$i; printf("%0.2f\n", j / NF); j=0 }' ${COMBINED_FILE}
 
 gawk -i inplace '{printf "%d %s\n", NR, $0}' ${COMBINED_FILE}
+mv ${COMBINED_FILE} $(echo ${FILENAME} | tr '_' '-').combined
