@@ -83,7 +83,6 @@ void cond_lock_ro( thread_info** ti )
 			break;
 	} while( 1 );
 #elif USE_ANDERSON // flag-based reader-writer lock (array-based lock)
-				   // TODO: fix FPE
 	cond_lock_rw( ti );
 #elif USE_RW_ARRAY // http://joeduffyblog.com/2009/02/20/a-more-scalable-readerwriter-lock-and-a-bit-less-harsh-consideration-of-the-idea/
 	int backoff_ctr = 0;
@@ -109,7 +108,7 @@ void cond_unlock_ro( thread_info** ti )
 #elif USE_RW_TATAS
 	__sync_fetch_and_add( &global_tatas_lock, -1 );
 #elif USE_ANDERSON // flag-based reader-writer lock (array-based lock)
-	cond_unlock_rw();
+	cond_unlock_rw( ti );
 #elif USE_RW_ARRAY
 	__sync_fetch_and_add( &( g_ro_flags[( *ti )->thread_num] ), -1 );
 #endif
@@ -322,6 +321,7 @@ int main( int argc, char** argv )
 		tinfo[i].thread_arg = SUM_LOOP_NUM;
 		tinfo[i].run_on_single_core = atoi( argv[3] );
 		tinfo[i].shared_data = &shared_arr;
+		tinfo[i].number_of_threads = num_threads;
 		tinfo[i].shared_data_sz = shared_data_sz;
 		tinfo[i].anderson_slot = 0;
 		tinfo[i].ops_until_write = atoi( argv[4] );
