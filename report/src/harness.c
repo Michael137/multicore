@@ -9,7 +9,7 @@
 #include <time.h>
 #include <xmmintrin.h> // _mm_pause
 
-#define SUM_LOOP_NUM 10000
+#define SUM_LOOP_NUM 75000
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
 volatile sig_atomic_t global_tatas_lock = 0;
 
@@ -54,7 +54,7 @@ void log_thread( thread_info* ti )
 
 void eb_spin( int* ctr )
 {
-	if( (*ctr)++ < 32 ) {
+	if( ( *ctr )++ < 32 ) {
 		struct timespec ts;
 		int milliseconds = 2 << *ctr;
 		ts.tv_sec = milliseconds / 1000;
