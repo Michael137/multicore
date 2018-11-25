@@ -10,13 +10,21 @@
 #include <xmmintrin.h> // _mm_pause
 
 #define SUM_LOOP_NUM 100000
+static volatile int* shared_arr         = NULL;
 static pthread_mutex_t shared_arr_mutex = PTHREAD_MUTEX_INITIALIZER;
 volatile sig_atomic_t global_tatas_lock = 0;
 
 volatile int* global_anderson_flags = NULL;
 
-volatile sig_atomic_t* g_ro_flags = NULL; // TODO: wrap flags in padded structs
-volatile sig_atomic_t g_rw_flag   = 0;    // Single writer
+typedef struct rw_array_flag
+{
+	volatile sig_atomic_t flag_;
+} __attribute__( ( __aligned__( 64 ) ) ) rw_array_flag;
+
+// volatile sig_atomic_t* g_ro_flags = NULL; // TODO: wrap flags in padded
+// structs
+volatile rw_array_flag* g_ro_flags = NULL;
+volatile sig_atomic_t g_rw_flag    = 0; // Single writer
 
 volatile sig_atomic_t global_anderson_tail  = 0;
 volatile sig_atomic_t first_thread_complete = 0;
@@ -30,7 +38,6 @@ typedef struct thread_info
 	int thread_num;
 	int thread_arg;
 	int shared_data_sz;
-	int** shared_data;
 	int run_on_single_core;
 	int anderson_slot;
 	int number_of_threads;
@@ -38,7 +45,7 @@ typedef struct thread_info
 	int operation_ctr;
 } thread_info;
 
-void sum_array( int* arr, size_t sz );
+void sum_array( volatile int* arr, size_t sz );
 void cond_unlock_rw( thread_info** ti );
 void cond_lock_rw( thread_info** ti );
 void cond_unlock_ro( thread_info** ti );
@@ -97,14 +104,15 @@ void cond_lock_ro( thread_info** ti )
 	{
 		while( g_rw_flag == 1 )
 		{
-			eb_spin( &backoff_ctr );
+			// eb_spin( &backoff_ctr );
+			_mm_pause();
 		}
 
-		__sync_fetch_and_add( &( g_ro_flags[lock_idx] ), 1 );
+		__sync_fetch_and_add( &( g_ro_flags[lock_idx].flag_ ), 1 );
 		if( g_rw_flag == 0 )
 			break;
 
-		__sync_fetch_and_add( &( g_ro_flags[lock_idx] ), -1 );
+		__sync_fetch_and_add( &( g_ro_flags[lock_idx].flag_ ), -1 );
 	}
 #endif
 }
@@ -121,8 +129,8 @@ void cond_unlock_ro( thread_info** ti )
 	cond_unlock_rw( ti );
 #elif USE_RW_ARRAY
 	__sync_fetch_and_add(
-	    &( g_ro_flags[( *ti )->thread_id
-	                  % ( ( *ti )->number_of_threads * 16 )] ),
+	    &( g_ro_flags[( *ti )->thread_id % ( ( *ti )->number_of_threads * 16 )]
+	           .flag_ ),
 	    -1 );
 #endif
 }
@@ -168,16 +176,19 @@ void cond_lock_rw( thread_info** ti )
 		{
 			for( int i = 0; i < ( *ti )->number_of_threads; ++i )
 			{ // TODO: Use bitvector + OR() to check for set flags?
-				while( g_ro_flags[i] != 0 )
+				while( g_ro_flags[i].flag_ != 0 )
 				{
-					eb_spin( &ctr ); // TODO: perf stat to see if wait impl. is
-					                 // bottleneck
+					// eb_spin( &ctr ); // TODO: perf stat to see if wait impl.
+					// is
+					// bottleneck
+					_mm_pause();
 				}
 				ctr = 0;
 			}
 			break;
 		}
-		eb_spin( &ctr );
+		// eb_spin( &ctr );
+		_mm_pause();
 	}
 #endif
 }
@@ -269,7 +280,7 @@ thread_sum_unlim_fn( void* arg )
 	{
 		lock( &t_info );
 		log_thread( t_info );
-		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
+		sum_array( shared_arr, t_info->shared_data_sz );
 		unlock( &t_info );
 		t_info->operation_ctr++;
 	}
@@ -279,7 +290,6 @@ thread_sum_unlim_fn( void* arg )
 static void* __attribute__( ( noinline ) ) __attribute__( ( optimize( "O0" ) ) )
 thread_sum_fn( void* arg )
 {
-	pthread_setcanceltype( PTHREAD_CANCEL_ASYNCHRONOUS, NULL );
 	thread_info* t_info = arg;
 	if( t_info->run_on_single_core )
 		schedule_on_core();
@@ -289,7 +299,7 @@ thread_sum_fn( void* arg )
 	{
 		lock( &t_info );
 		log_thread( t_info );
-		sum_array( *( t_info->shared_data ), t_info->shared_data_sz );
+		sum_array( shared_arr, t_info->shared_data_sz );
 		unlock( &t_info );
 		t_info->operation_ctr++;
 	}
@@ -298,7 +308,7 @@ thread_sum_fn( void* arg )
 }
 
 void __attribute__( ( noinline ) ) __attribute__( ( optimize( "O0" ) ) )
-sum_array( int* arr, size_t sz )
+sum_array( volatile int* arr, size_t sz )
 {
 	int sum = 0;
 	int i;
@@ -314,6 +324,7 @@ sum_array( int* arr, size_t sz )
 // 4: number of operations until a write is to be performed
 int main( int argc, char** argv )
 {
+	pthread_setcanceltype( PTHREAD_CANCEL_ASYNCHRONOUS, NULL );
 	srand( time( NULL ) );
 
 	int num_threads = atoi( argv[1] );
@@ -323,7 +334,7 @@ int main( int argc, char** argv )
 	tinfo = calloc( num_threads, sizeof( thread_info ) );
 
 	int shared_data_sz = atoi( argv[2] );
-	int* shared_arr    = malloc( shared_data_sz * sizeof( int ) );
+	shared_arr         = malloc( shared_data_sz * sizeof( int ) );
 	int j;
 	for( j = 0; j < shared_data_sz; ++j )
 		shared_arr[j] = rand() % ( shared_data_sz * 5 );
@@ -334,14 +345,14 @@ int main( int argc, char** argv )
 	global_anderson_flags[0] = 1;                   // First flag available
 
 	/* Initialize rw queue lock flags */
-	g_ro_flags = calloc( 16 * num_threads, sizeof( int ) ); // Multiple readers
+	g_ro_flags = calloc( 16 * num_threads,
+	                     sizeof( rw_array_flag ) ); // Multiple readers
 
 	int i, tret;
 	void* res;
 	tinfo[0].thread_num         = 0;
 	tinfo[0].thread_arg         = SUM_LOOP_NUM;
 	tinfo[0].run_on_single_core = atoi( argv[3] );
-	tinfo[0].shared_data        = &shared_arr;
 	tinfo[0].shared_data_sz     = shared_data_sz;
 	tinfo[0].anderson_slot      = 0;
 	tinfo[0].number_of_threads  = num_threads;
@@ -355,7 +366,6 @@ int main( int argc, char** argv )
 		tinfo[i].thread_num         = i;
 		tinfo[i].thread_arg         = SUM_LOOP_NUM;
 		tinfo[i].run_on_single_core = atoi( argv[3] );
-		tinfo[i].shared_data        = &shared_arr;
 		tinfo[i].number_of_threads  = num_threads;
 		tinfo[i].shared_data_sz     = shared_data_sz;
 		tinfo[i].anderson_slot      = 0;
@@ -367,6 +377,8 @@ int main( int argc, char** argv )
 
 	tret = pthread_join( tinfo[0].thread_id, &res );
 
+	//	puts( "Cleaning up threads..." );
+	//
 	// TODO: add cleanup handler to avoid leaks (flagged by tsan)
 	for( i = 1; i < num_threads; ++i )
 	{
