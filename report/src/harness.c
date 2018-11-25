@@ -92,6 +92,7 @@ void cond_lock_ro( thread_info** ti )
 	cond_lock_rw( ti );
 #elif USE_RW_ARRAY // http://joeduffyblog.com/2009/02/20/a-more-scalable-readerwriter-lock-and-a-bit-less-harsh-consideration-of-the-idea/
 	int backoff_ctr = 0;
+	int lock_idx    = ( *ti )->thread_id % ( ( *ti )->number_of_threads * 16 );
 	while( 1 )
 	{
 		while( g_rw_flag == 1 )
@@ -99,11 +100,11 @@ void cond_lock_ro( thread_info** ti )
 			eb_spin( &backoff_ctr );
 		}
 
-		__sync_fetch_and_add( &( g_ro_flags[( *ti )->thread_num] ), 1 );
+		__sync_fetch_and_add( &( g_ro_flags[lock_idx] ), 1 );
 		if( g_rw_flag == 0 )
 			break;
 
-		__sync_fetch_and_add( &( g_ro_flags[( *ti )->thread_num] ), -1 );
+		__sync_fetch_and_add( &( g_ro_flags[lock_idx] ), -1 );
 	}
 #endif
 }
@@ -119,7 +120,10 @@ void cond_unlock_ro( thread_info** ti )
 #elif USE_ANDERSON // flag-based reader-writer lock (array-based lock)
 	cond_unlock_rw( ti );
 #elif USE_RW_ARRAY
-	__sync_fetch_and_add( &( g_ro_flags[( *ti )->thread_num] ), -1 );
+	__sync_fetch_and_add(
+	    &( g_ro_flags[( *ti )->thread_id
+	                  % ( ( *ti )->number_of_threads * 16 )] ),
+	    -1 );
 #endif
 }
 
@@ -163,8 +167,14 @@ void cond_lock_rw( thread_info** ti )
 		if( g_rw_flag == 0 && __sync_lock_test_and_set( &g_rw_flag, 1 ) == 0 )
 		{
 			for( int i = 0; i < ( *ti )->number_of_threads; ++i )
+			{ // TODO: Use bitvector + OR() to check for set flags?
 				while( g_ro_flags[i] != 0 )
-					eb_spin( &ctr );
+				{
+					eb_spin( &ctr ); // TODO: perf stat to see if wait impl. is
+					                 // bottleneck
+				}
+				ctr = 0;
+			}
 			break;
 		}
 		eb_spin( &ctr );
@@ -324,7 +334,7 @@ int main( int argc, char** argv )
 	global_anderson_flags[0] = 1;                   // First flag available
 
 	/* Initialize rw queue lock flags */
-	g_ro_flags = calloc( num_threads, sizeof( int ) ); // Multiple readers
+	g_ro_flags = calloc( 16 * num_threads, sizeof( int ) ); // Multiple readers
 
 	int i, tret;
 	void* res;
