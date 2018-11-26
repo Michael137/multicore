@@ -1,4 +1,11 @@
 set term wxt enhanced
 set autoscale
-filelist=system("ls *.result")
-plot for [f in filelist] f using 1:2 with lines title f
+set grid
+
+set term wxt 0
+short_section=system("ls *16-5-*.result")
+plot for [f in short_section] f using 1:2 with linespoints title f
+
+set term wxt 1
+long_section=system("ls *16-5000*.result")
+plot for [f in long_section] f using 1:2 with linespoints title f

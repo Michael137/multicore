@@ -22,15 +22,15 @@ do
 	# TODO: add "-x \;" option?
 	# perf stat --pre 'sleep 2' -r 10 -d -d \
 	results+=($( \
-		perf stat -r 15 -d -d \
-			-e cache-references,cache-misses,faults,context-switches,cpu-clock,offcore_requests.all_data_rd \
+		perf stat --post 'sleep 2' -r 15 -d -d \
+			-e cache-references,cache-misses,faults,context-switches,cpu-clock,offcore_requests.all_data_rd,instructions \
 			./harness.out $i ${SHARED_SIZE} ${SINGLE_CORE} ${READ_WRITE} 2>&1 \
 			| grep -v "Spawning" \
 			| tee -a ${OUT_FILE}.report \
 			| grep "seconds time elapsed" | awk '{print $1" "$7}')
 	)
 
-	sleep 5
+	sleep 3
 done
 
 truncate -s 0 ${OUT_FILE}
@@ -42,3 +42,5 @@ done
 
 gawk -i inplace '{printf("%d %s\n", NR, $0)}' ${OUT_FILE}
 mv ${OUT_FILE} $(echo ${OUT_FILE} | tr '_' '-')
+
+sleep 3
