@@ -386,7 +386,7 @@ int main( int argc, char** argv )
 	}
 
 	free( res );
-	free( shared_arr );
+	free( (int*)shared_arr );
 	free( (int*)global_anderson_flags );
 	free( tinfo );
 
