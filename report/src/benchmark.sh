@@ -23,7 +23,7 @@ do
 	# perf stat --pre 'sleep 2' -r 10 -d -d \
 	results+=($( \
 		perf stat -r 15 -d -d \
-			-e cache-references,cache-misses,faults,context-switches,cpu-clock,cpu-migrations \
+			-e cache-references,cache-misses,faults,context-switches,cpu-clock,offcore_requests.all_data_rd \
 			./harness.out $i ${SHARED_SIZE} ${SINGLE_CORE} ${READ_WRITE} 2>&1 \
 			| grep -v "Spawning" \
 			| tee -a ${OUT_FILE}.report \
@@ -40,5 +40,5 @@ do
 	echo "${results[j]} # ${results[j+1]}" >> ${OUT_FILE}
 done
 
-gawk -i inplace '{print i++ " " $0}' ${OUT_FILE}
+gawk -i inplace '{printf("%d %s\n", NR, $0)}' ${OUT_FILE}
 mv ${OUT_FILE} $(echo ${OUT_FILE} | tr '_' '-')
