@@ -21,7 +21,7 @@ do
 	# TODO: add "-x \;" option?
 	# perf stat --pre 'sleep 2' -r 10 -d -d \
 	results+=($( \
-		perf stat -r 5 -d -d \
+		perf stat -r 15 -d -d \
 			-e cache-references,cache-misses,faults,context-switches,cpu-clock,cpu-migrations \
 			./harness.out $i ${SHARED_SIZE} ${SINGLE_CORE} ${READ_WRITE} 2>&1 \
 			| grep -v "Spawning" \
