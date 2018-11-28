@@ -1,0 +1,368 @@
+
+ Performance counter stats for './harness.out 1 5000 0 50000' (15 runs):
+
+            80,886      cache-references          #    0.058 M/sec                    ( +-  1.64% )  (33.06%)
+            32,069      cache-misses              #   39.647 % of all cache refs      ( +-  6.96% )  (33.21%)
+                69      faults                    #    0.050 K/sec                    ( +-  0.56% )
+                13      context-switches          #    0.009 K/sec                    ( +- 36.75% )
+       1383.481636      cpu-clock (msec)          #    1.000 CPUs utilized            ( +-  0.24% )
+            50,081      offcore_requests.all_data_rd #    0.036 M/sec                    ( +-  4.87% )  (33.40%)
+     5,963,042,715      instructions                                                                                     ( +-  0.04% )  (41.80%)
+     3,500,184,354      L1-dcache-loads           # 2529.983 M/sec                    ( +-  0.02% )  (40.92%)
+           571,105      L1-dcache-load-misses     #    0.02% of all L1-dcache hits    ( +- 12.72% )  (25.16%)
+             4,975      LLC-loads                 #    0.004 M/sec                    ( +- 14.70% )  (16.70%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+            58,845      L1-icache-load-misses                                         ( +-  3.74% )  (25.02%)
+     3,525,617,152      dTLB-loads                # 2548.366 M/sec                    ( +-  0.03% )  (24.68%)
+             3,186      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  3.35% )  (16.56%)
+               492      iTLB-loads                #    0.356 K/sec                    ( +-  7.99% )  (16.47%)
+               442      iTLB-load-misses          #   89.81% of all iTLB cache hits   ( +- 10.43% )  (24.66%)
+
+       1.384075573 seconds time elapsed                                          ( +-  0.24% )
+
+
+ Performance counter stats for './harness.out 2 5000 0 50000' (15 runs):
+
+         1,481,175      cache-references          #    0.488 M/sec                    ( +-  5.55% )  (33.15%)
+            41,294      cache-misses              #    2.788 % of all cache refs      ( +-  5.63% )  (33.36%)
+                78      faults                    #    0.026 K/sec                    ( +-  0.53% )
+                13      context-switches          #    0.004 K/sec                    ( +- 45.99% )
+       3033.742297      cpu-clock (msec)          #    1.999 CPUs utilized            ( +-  5.96% )
+           743,637      offcore_requests.all_data_rd #    0.245 M/sec                    ( +- 11.18% )  (33.52%)
+    14,112,779,869      instructions                                                                                     ( +-  9.19% )  (41.91%)
+     7,672,222,870      L1-dcache-loads           # 2528.963 M/sec                    ( +-  6.79% )  (41.08%)
+        11,320,789      L1-dcache-load-misses     #    0.15% of all L1-dcache hits    ( +-  4.50% )  (25.10%)
+           988,486      LLC-loads                 #    0.326 M/sec                    ( +-  7.50% )  (16.64%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+           125,190      L1-icache-load-misses                                         ( +-  8.85% )  (24.93%)
+     7,697,960,146      dTLB-loads                # 2537.447 M/sec                    ( +-  6.75% )  (24.60%)
+             6,415      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  8.09% )  (16.53%)
+             3,963      iTLB-loads                #    0.001 M/sec                    ( +- 14.61% )  (16.52%)
+             4,132      iTLB-load-misses          #  104.27% of all iTLB cache hits   ( +- 14.36% )  (24.75%)
+
+       1.517913540 seconds time elapsed                                          ( +-  5.96% )
+
+
+ Performance counter stats for './harness.out 3 5000 0 50000' (15 runs):
+
+         3,316,738      cache-references          #    0.725 M/sec                    ( +-  6.87% )  (33.19%)
+            42,424      cache-misses              #    1.279 % of all cache refs      ( +-  4.81% )  (33.32%)
+                81      faults                    #    0.018 K/sec                    ( +-  0.51% )
+                20      context-switches          #    0.004 K/sec                    ( +- 30.19% )
+       4572.959348      cpu-clock (msec)          #    2.998 CPUs utilized            ( +-  2.95% )
+         2,612,008      offcore_requests.all_data_rd #    0.571 M/sec                    ( +- 10.95% )  (33.43%)
+    20,567,344,437      instructions                                                                                     ( +-  5.04% )  (41.81%)
+    11,321,258,844      L1-dcache-loads           # 2475.696 M/sec                    ( +-  3.36% )  (40.97%)
+        17,999,816      L1-dcache-load-misses     #    0.16% of all L1-dcache hits    ( +-  3.04% )  (25.06%)
+         2,480,379      LLC-loads                 #    0.542 M/sec                    ( +-  8.05% )  (16.65%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+           160,791      L1-icache-load-misses                                         ( +-  6.02% )  (24.97%)
+    11,354,030,168      dTLB-loads                # 2482.863 M/sec                    ( +-  3.30% )  (24.68%)
+             9,953      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  6.09% )  (16.60%)
+             2,021      iTLB-loads                #    0.442 K/sec                    ( +- 18.27% )  (16.56%)
+             1,997      iTLB-load-misses          #   98.78% of all iTLB cache hits   ( +- 13.40% )  (24.80%)
+
+       1.525401116 seconds time elapsed                                          ( +-  2.95% )
+
+
+ Performance counter stats for './harness.out 4 5000 0 50000' (15 runs):
+
+         9,043,555      cache-references          #    1.481 M/sec                    ( +-  4.98% )  (33.14%)
+            48,250      cache-misses              #    0.534 % of all cache refs      ( +-  5.12% )  (33.39%)
+                82      faults                    #    0.013 K/sec                    ( +-  0.39% )
+                18      context-switches          #    0.003 K/sec                    ( +- 28.80% )
+       6106.195234      cpu-clock (msec)          #    3.997 CPUs utilized            ( +-  2.90% )
+         8,806,042      offcore_requests.all_data_rd #    1.442 M/sec                    ( +-  7.12% )  (33.62%)
+    27,221,796,469      instructions                                                                                     ( +-  7.49% )  (42.02%)
+    15,004,753,205      L1-dcache-loads           # 2457.300 M/sec                    ( +-  4.00% )  (40.22%)
+        26,133,752      L1-dcache-load-misses     #    0.17% of all L1-dcache hits    ( +-  2.99% )  (26.69%)
+         8,090,137      LLC-loads                 #    1.325 M/sec                    ( +-  5.72% )  (17.13%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+           226,648      L1-icache-load-misses                                         ( +-  3.45% )  (24.89%)
+    15,055,106,654      dTLB-loads                # 2465.546 M/sec                    ( +-  3.96% )  (23.90%)
+            14,398      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  4.73% )  (18.46%)
+             2,836      iTLB-loads                #    0.464 K/sec                    ( +-  3.65% )  (16.49%)
+             2,542      iTLB-load-misses          #   89.63% of all iTLB cache hits   ( +-  2.68% )  (24.73%)
+
+       1.527635632 seconds time elapsed                                          ( +-  2.90% )
+
+
+ Performance counter stats for './harness.out 5 5000 0 50000' (15 runs):
+
+         6,396,042      cache-references          #    0.777 M/sec                    ( +-  3.70% )  (32.96%)
+            47,976      cache-misses              #    0.750 % of all cache refs      ( +-  5.05% )  (33.21%)
+                86      faults                    #    0.010 K/sec                    ( +-  0.41% )
+                25      context-switches          #    0.003 K/sec                    ( +- 21.98% )
+       8231.584546      cpu-clock (msec)          #    4.997 CPUs utilized            ( +-  4.31% )
+         5,922,798      offcore_requests.all_data_rd #    0.720 M/sec                    ( +-  4.24% )  (33.42%)
+    35,737,945,839      instructions                                                                                     ( +-  5.59% )  (41.85%)
+    18,232,292,488      L1-dcache-loads           # 2214.919 M/sec                    ( +-  4.58% )  (37.96%)
+        24,263,721      L1-dcache-load-misses     #    0.13% of all L1-dcache hits    ( +-  4.00% )  (28.82%)
+         5,249,684      LLC-loads                 #    0.638 M/sec                    ( +-  3.98% )  (17.82%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+           268,331      L1-icache-load-misses                                         ( +-  3.85% )  (25.26%)
+    18,284,776,176      dTLB-loads                # 2221.295 M/sec                    ( +-  4.34% )  (22.74%)
+            48,655      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 42.13% )  (19.50%)
+             2,562      iTLB-loads                #    0.311 K/sec                    ( +-  4.19% )  (16.49%)
+             2,820      iTLB-load-misses          #  110.07% of all iTLB cache hits   ( +-  4.24% )  (24.71%)
+
+       1.647428573 seconds time elapsed                                          ( +-  4.31% )
+
+
+ Performance counter stats for './harness.out 6 5000 0 50000' (15 runs):
+
+         7,646,818      cache-references          #    0.673 M/sec                    ( +-  3.31% )  (33.00%)
+            52,878      cache-misses              #    0.692 % of all cache refs      ( +-  4.77% )  (33.21%)
+                88      faults                    #    0.008 K/sec                    ( +-  0.43% )
+                73      context-switches          #    0.006 K/sec                    ( +-  5.46% )
+      11361.786789      cpu-clock (msec)          #    5.995 CPUs utilized            ( +-  3.83% )
+         7,196,054      offcore_requests.all_data_rd #    0.633 M/sec                    ( +-  3.78% )  (33.36%)
+    47,067,247,682      instructions                                                                                     ( +-  4.74% )  (41.75%)
+    23,093,858,857      L1-dcache-loads           # 2032.590 M/sec                    ( +-  4.07% )  (37.77%)
+        26,651,100      L1-dcache-load-misses     #    0.12% of all L1-dcache hits    ( +-  2.92% )  (27.56%)
+         6,229,786      LLC-loads                 #    0.548 M/sec                    ( +-  3.49% )  (19.09%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+           353,545      L1-icache-load-misses                                         ( +-  4.20% )  (25.00%)
+    23,122,212,514      dTLB-loads                # 2035.086 M/sec                    ( +-  4.12% )  (22.89%)
+            67,272      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 22.17% )  (18.76%)
+             3,448      iTLB-loads                #    0.303 K/sec                    ( +- 11.13% )  (16.54%)
+             5,174      iTLB-load-misses          #  150.06% of all iTLB cache hits   ( +- 19.82% )  (24.73%)
+
+       1.895259547 seconds time elapsed                                          ( +-  3.82% )
+
+
+ Performance counter stats for './harness.out 7 5000 0 50000' (15 runs):
+
+        12,373,379      cache-references          #    0.711 M/sec                    ( +-  6.10% )  (32.58%)
+            62,812      cache-misses              #    0.508 % of all cache refs      ( +-  5.14% )  (33.28%)
+                90      faults                    #    0.005 K/sec                    ( +-  0.40% )
+               105      context-switches          #    0.006 K/sec                    ( +- 11.83% )
+      17407.962697      cpu-clock (msec)          #    6.993 CPUs utilized            ( +-  7.40% )
+        11,532,284      offcore_requests.all_data_rd #    0.662 M/sec                    ( +-  6.14% )  (33.35%)
+    67,817,090,723      instructions                                                                                     ( +-  8.09% )  (41.71%)
+    32,954,662,650      L1-dcache-loads           # 1893.080 M/sec                    ( +-  7.34% )  (36.43%)
+        38,032,475      L1-dcache-load-misses     #    0.12% of all L1-dcache hits    ( +-  5.64% )  (28.20%)
+        10,256,857      LLC-loads                 #    0.589 M/sec                    ( +-  6.22% )  (19.85%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+           497,676      L1-icache-load-misses                                         ( +-  6.92% )  (24.58%)
+    32,955,296,385      dTLB-loads                # 1893.116 M/sec                    ( +-  7.24% )  (21.66%)
+           115,989      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 13.86% )  (19.05%)
+             8,813      iTLB-loads                #    0.506 K/sec                    ( +- 56.41% )  (16.66%)
+             4,960      iTLB-load-misses          #   56.28% of all iTLB cache hits   ( +-  7.99% )  (24.30%)
+
+       2.489231896 seconds time elapsed                                          ( +-  7.40% )
+
+
+ Performance counter stats for './harness.out 8 5000 0 50000' (15 runs):
+
+        15,341,574      cache-references          #    0.810 M/sec                    ( +-  7.80% )  (30.53%)
+            61,614      cache-misses              #    0.402 % of all cache refs      ( +-  4.00% )  (30.73%)
+                93      faults                    #    0.005 K/sec                    ( +-  0.29% )
+               170      context-switches          #    0.009 K/sec                    ( +-  8.78% )
+      18946.639142      cpu-clock (msec)          #    7.976 CPUs utilized            ( +-  9.70% )
+        15,879,278      offcore_requests.all_data_rd #    0.838 M/sec                    ( +-  7.64% )  (31.70%)
+    68,140,945,661      instructions                                                                                     ( +- 10.86% )  (40.06%)
+    33,616,401,857      L1-dcache-loads           # 1774.267 M/sec                    ( +-  9.50% )  (31.27%)
+        41,306,791      L1-dcache-load-misses     #    0.12% of all L1-dcache hits    ( +-  7.44% )  (28.39%)
+        13,438,204      LLC-loads                 #    0.709 M/sec                    ( +-  7.48% )  (21.06%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+           527,594      L1-icache-load-misses                                         ( +-  9.46% )  (23.57%)
+    33,816,005,943      dTLB-loads                # 1784.802 M/sec                    ( +-  9.47% )  (19.76%)
+           179,566      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 13.40% )  (19.62%)
+            13,306      iTLB-loads                #    0.702 K/sec                    ( +- 88.79% )  (16.79%)
+             4,498      iTLB-load-misses          #   33.80% of all iTLB cache hits   ( +- 16.72% )  (23.00%)
+
+       2.375536400 seconds time elapsed                                          ( +-  9.68% )
+
+
+ Performance counter stats for './harness.out 9 5000 0 50000' (15 runs):
+
+        13,987,622      cache-references          #    0.775 M/sec                    ( +-  4.53% )  (30.55%)
+            65,536      cache-misses              #    0.469 % of all cache refs      ( +-  5.16% )  (29.90%)
+                95      faults                    #    0.005 K/sec                    ( +-  0.33% )
+               310      context-switches          #    0.017 K/sec                    ( +-  6.25% )
+      18047.407295      cpu-clock (msec)          #    7.973 CPUs utilized            ( +-  5.11% )
+        14,601,270      offcore_requests.all_data_rd #    0.809 M/sec                    ( +-  4.12% )  (30.93%)
+    65,662,636,015      instructions                                                                                     ( +-  5.64% )  (39.31%)
+    31,950,146,762      L1-dcache-loads           # 1770.346 M/sec                    ( +-  5.09% )  (30.98%)
+        36,771,204      L1-dcache-load-misses     #    0.12% of all L1-dcache hits    ( +-  4.73% )  (28.30%)
+        11,903,062      LLC-loads                 #    0.660 M/sec                    ( +-  4.08% )  (21.16%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+           558,991      L1-icache-load-misses                                         ( +-  5.22% )  (24.21%)
+    32,073,689,029      dTLB-loads                # 1777.191 M/sec                    ( +-  5.08% )  (20.08%)
+           146,171      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 14.65% )  (19.22%)
+             7,659      iTLB-loads                #    0.424 K/sec                    ( +- 40.05% )  (16.86%)
+             3,122      iTLB-load-misses          #   40.76% of all iTLB cache hits   ( +-  7.48% )  (23.42%)
+
+       2.263508985 seconds time elapsed                                          ( +-  5.11% )
+
+
+ Performance counter stats for './harness.out 10 5000 0 50000' (15 runs):
+
+        19,995,959      cache-references          #    0.604 M/sec                    ( +- 10.09% )  (29.60%)
+            82,254      cache-misses              #    0.411 % of all cache refs      ( +-  6.08% )  (29.04%)
+                96      faults                    #    0.003 K/sec                    ( +-  0.23% )
+               789      context-switches          #    0.024 K/sec                    ( +- 13.76% )
+      33112.653920      cpu-clock (msec)          #    7.978 CPUs utilized            ( +- 14.31% )
+        20,500,605      offcore_requests.all_data_rd #    0.619 M/sec                    ( +- 10.46% )  (29.75%)
+   128,589,217,947      instructions                                                                                     ( +- 15.63% )  (38.11%)
+    58,069,513,275      L1-dcache-loads           # 1753.696 M/sec                    ( +- 14.11% )  (29.41%)
+        52,022,992      L1-dcache-load-misses     #    0.09% of all L1-dcache hits    ( +-  9.81% )  (27.75%)
+        17,150,987      LLC-loads                 #    0.518 M/sec                    ( +-  9.80% )  (21.90%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+         1,064,895      L1-icache-load-misses                                         ( +- 14.33% )  (24.65%)
+    58,052,485,188      dTLB-loads                # 1753.181 M/sec                    ( +- 14.06% )  (19.82%)
+           216,178      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 15.18% )  (19.40%)
+             5,204      iTLB-loads                #    0.157 K/sec                    ( +- 39.20% )  (17.09%)
+             5,789      iTLB-load-misses          #  111.24% of all iTLB cache hits   ( +- 11.00% )  (23.15%)
+
+       4.150301477 seconds time elapsed                                          ( +- 14.31% )
+
+
+ Performance counter stats for './harness.out 11 5000 0 50000' (15 runs):
+
+        18,441,771      cache-references          #    0.626 M/sec                    ( +-  6.62% )  (29.42%)
+            81,573      cache-misses              #    0.442 % of all cache refs      ( +-  7.26% )  (28.61%)
+               100      faults                    #    0.003 K/sec                    ( +-  0.40% )
+               920      context-switches          #    0.031 K/sec                    ( +-  8.10% )
+      29477.988491      cpu-clock (msec)          #    7.979 CPUs utilized            ( +-  8.63% )
+        19,328,410      offcore_requests.all_data_rd #    0.656 M/sec                    ( +-  7.77% )  (29.42%)
+   113,534,078,100      instructions                                                                                     ( +-  9.60% )  (37.78%)
+    51,734,632,300      L1-dcache-loads           # 1755.026 M/sec                    ( +-  8.68% )  (29.31%)
+        46,573,069      L1-dcache-load-misses     #    0.09% of all L1-dcache hits    ( +-  6.79% )  (27.73%)
+        15,627,056      LLC-loads                 #    0.530 M/sec                    ( +-  6.56% )  (22.05%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+         1,026,460      L1-icache-load-misses                                         ( +-  9.15% )  (24.58%)
+    51,776,765,562      dTLB-loads                # 1756.455 M/sec                    ( +-  8.61% )  (19.93%)
+           151,761      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  9.12% )  (19.07%)
+             6,513      iTLB-loads                #    0.221 K/sec                    ( +- 63.06% )  (16.98%)
+             5,281      iTLB-load-misses          #   81.09% of all iTLB cache hits   ( +-  6.06% )  (23.12%)
+
+       3.694549098 seconds time elapsed                                          ( +-  8.62% )
+
+
+ Performance counter stats for './harness.out 12 5000 0 50000' (15 runs):
+
+        18,891,165      cache-references          #    0.572 M/sec                    ( +-  5.90% )  (28.69%)
+            82,005      cache-misses              #    0.434 % of all cache refs      ( +-  6.34% )  (28.65%)
+               102      faults                    #    0.003 K/sec                    ( +-  0.39% )
+             1,271      context-switches          #    0.038 K/sec                    ( +-  8.50% )
+      33028.773537      cpu-clock (msec)          #    7.981 CPUs utilized            ( +-  8.80% )
+        19,715,833      offcore_requests.all_data_rd #    0.597 M/sec                    ( +-  5.53% )  (29.60%)
+   129,138,517,470      instructions                                                                                     ( +-  9.86% )  (37.96%)
+    57,712,624,492      L1-dcache-loads           # 1747.344 M/sec                    ( +-  8.78% )  (28.42%)
+        47,882,278      L1-dcache-load-misses     #    0.08% of all L1-dcache hits    ( +-  5.58% )  (27.73%)
+        16,133,627      LLC-loads                 #    0.488 M/sec                    ( +-  5.43% )  (21.98%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+         1,205,759      L1-icache-load-misses                                         ( +-  9.26% )  (24.07%)
+    57,704,244,524      dTLB-loads                # 1747.090 M/sec                    ( +-  8.68% )  (19.39%)
+           176,266      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +-  8.41% )  (19.48%)
+             3,654      iTLB-loads                #    0.111 K/sec                    ( +- 37.92% )  (17.35%)
+             6,469      iTLB-load-misses          #  177.02% of all iTLB cache hits   ( +-  8.78% )  (22.64%)
+
+       4.138365128 seconds time elapsed                                          ( +-  8.80% )
+
+
+ Performance counter stats for './harness.out 13 5000 0 50000' (15 runs):
+
+        23,093,064      cache-references          #    0.486 M/sec                    ( +- 10.08% )  (28.98%)
+            94,972      cache-misses              #    0.411 % of all cache refs      ( +-  4.80% )  (28.50%)
+               104      faults                    #    0.002 K/sec                    ( +-  0.37% )
+             2,198      context-switches          #    0.046 K/sec                    ( +- 15.98% )
+      47504.135268      cpu-clock (msec)          #    7.978 CPUs utilized            ( +- 15.96% )
+        22,716,597      offcore_requests.all_data_rd #    0.478 M/sec                    ( +-  9.82% )  (29.24%)
+   190,930,289,254      instructions                                                                                     ( +- 17.30% )  (37.60%)
+    81,861,435,500      L1-dcache-loads           # 1723.249 M/sec                    ( +- 15.83% )  (28.59%)
+        54,345,104      L1-dcache-load-misses     #    0.07% of all L1-dcache hits    ( +-  9.63% )  (27.94%)
+        19,385,692      LLC-loads                 #    0.408 M/sec                    ( +-  9.77% )  (22.26%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+         1,775,968      L1-icache-load-misses                                         ( +- 15.39% )  (24.49%)
+    81,835,716,256      dTLB-loads                # 1722.707 M/sec                    ( +- 15.75% )  (19.34%)
+           233,557      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 12.83% )  (19.32%)
+             9,563      iTLB-loads                #    0.201 K/sec                    ( +- 41.98% )  (17.34%)
+             9,360      iTLB-load-misses          #   97.88% of all iTLB cache hits   ( +- 16.21% )  (22.94%)
+
+       5.954244031 seconds time elapsed                                          ( +- 15.95% )
+
+
+ Performance counter stats for './harness.out 14 5000 0 50000' (15 runs):
+
+        26,038,010      cache-references          #    0.414 M/sec                    ( +- 12.00% )  (28.73%)
+            97,061      cache-misses              #    0.373 % of all cache refs      ( +-  6.30% )  (28.11%)
+               107      faults                    #    0.002 K/sec                    ( +-  0.34% )
+             3,332      context-switches          #    0.053 K/sec                    ( +- 19.13% )
+      62880.806704      cpu-clock (msec)          #    7.980 CPUs utilized            ( +- 18.93% )
+        25,498,853      offcore_requests.all_data_rd #    0.406 M/sec                    ( +- 11.56% )  (28.75%)
+   258,396,439,624      instructions                                                                                     ( +- 20.26% )  (37.11%)
+   107,292,078,498      L1-dcache-loads           # 1706.277 M/sec                    ( +- 18.66% )  (27.97%)
+        60,168,352      L1-dcache-load-misses     #    0.06% of all L1-dcache hits    ( +- 10.50% )  (27.57%)
+        21,972,146      LLC-loads                 #    0.349 M/sec                    ( +- 11.99% )  (22.19%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+         2,352,590      L1-icache-load-misses                                         ( +- 18.54% )  (24.29%)
+   107,410,335,204      dTLB-loads                # 1708.158 M/sec                    ( +- 18.65% )  (19.29%)
+           273,030      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 11.43% )  (19.15%)
+             3,668      iTLB-loads                #    0.058 K/sec                    ( +- 49.06% )  (17.27%)
+            10,645      iTLB-load-misses          #  290.20% of all iTLB cache hits   ( +- 18.21% )  (22.82%)
+
+       7.879928237 seconds time elapsed                                          ( +- 18.93% )
+
+
+ Performance counter stats for './harness.out 15 5000 0 50000' (15 runs):
+
+        32,321,073      cache-references          #    0.391 M/sec                    ( +- 16.61% )  (28.55%)
+           121,700      cache-misses              #    0.377 % of all cache refs      ( +-  7.01% )  (27.91%)
+               109      faults                    #    0.001 K/sec                    ( +-  0.35% )
+             4,970      context-switches          #    0.060 K/sec                    ( +- 25.70% )
+      82733.313432      cpu-clock (msec)          #    7.978 CPUs utilized            ( +- 25.88% )
+        31,821,639      offcore_requests.all_data_rd #    0.385 M/sec                    ( +- 15.90% )  (28.45%)
+   343,219,872,709      instructions                                                                                     ( +- 27.35% )  (36.79%)
+   140,852,850,258      L1-dcache-loads           # 1702.493 M/sec                    ( +- 25.49% )  (27.84%)
+        75,276,879      L1-dcache-load-misses     #    0.05% of all L1-dcache hits    ( +- 14.03% )  (27.47%)
+        27,306,850      LLC-loads                 #    0.330 M/sec                    ( +- 15.99% )  (22.31%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+         3,193,429      L1-icache-load-misses                                         ( +- 25.06% )  (24.66%)
+   140,921,209,694      dTLB-loads                # 1703.319 M/sec                    ( +- 25.50% )  (19.27%)
+           396,886      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 24.88% )  (19.29%)
+             8,715      iTLB-loads                #    0.105 K/sec                    ( +- 18.38% )  (17.32%)
+            15,118      iTLB-load-misses          #  173.47% of all iTLB cache hits   ( +- 23.05% )  (22.82%)
+
+      10.370379857 seconds time elapsed                                          ( +- 25.87% )
+
+
+ Performance counter stats for './harness.out 16 5000 0 50000' (15 runs):
+
+        29,206,978      cache-references          #    0.377 M/sec                    ( +- 16.69% )  (28.52%)
+           116,281      cache-misses              #    0.398 % of all cache refs      ( +-  7.87% )  (28.01%)
+               110      faults                    #    0.001 K/sec                    ( +-  0.32% )
+             5,144      context-switches          #    0.066 K/sec                    ( +- 26.64% )
+      77372.863277      cpu-clock (msec)          #    7.979 CPUs utilized            ( +- 26.24% )
+        28,460,579      offcore_requests.all_data_rd #    0.368 M/sec                    ( +- 15.40% )  (28.71%)
+   319,976,619,493      instructions                                                                                     ( +- 28.02% )  (37.05%)
+   131,251,486,352      L1-dcache-loads           # 1696.350 M/sec                    ( +- 25.99% )  (27.72%)
+        66,757,793      L1-dcache-load-misses     #    0.05% of all L1-dcache hits    ( +- 13.41% )  (27.57%)
+        24,902,462      LLC-loads                 #    0.322 M/sec                    ( +- 16.27% )  (22.05%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+         3,001,109      L1-icache-load-misses                                         ( +- 25.29% )  (24.10%)
+   131,285,138,032      dTLB-loads                # 1696.785 M/sec                    ( +- 26.01% )  (19.13%)
+           338,104      dTLB-load-misses          #    0.00% of all dTLB cache hits   ( +- 21.57% )  (19.07%)
+             8,378      iTLB-loads                #    0.108 K/sec                    ( +- 24.86% )  (17.43%)
+            14,328      iTLB-load-misses          #  171.02% of all iTLB cache hits   ( +- 23.45% )  (22.73%)
+
+       9.696994793 seconds time elapsed                                          ( +- 26.24% )
+
