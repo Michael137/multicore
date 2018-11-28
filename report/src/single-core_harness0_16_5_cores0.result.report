@@ -1,0 +1,432 @@
+
+ Performance counter stats for './harness.out 1 5 0 0' (25 runs):
+
+            50,178      cache-references          #   14.768 M/sec                    ( +- 14.32% )  (56.14%)
+             1,903      cache-misses              #    3.793 % of all cache refs      ( +- 23.77% )
+                64      faults                    #    0.019 M/sec                    ( +-  0.41% )
+                 1      context-switches          #    0.306 K/sec                    ( +-  3.85% )
+          3.397704      cpu-clock (msec)          #    0.931 CPUs utilized            ( +-  4.20% )
+            11,015      offcore_requests.all_data_rd #    3.242 M/sec                    ( +-  0.65% )
+        10,369,290      instructions                                                                                     ( +-  0.05% )
+     <not counted>      L1-dcache-loads                                               (0.00%)
+     <not counted>      L1-dcache-load-misses                                         (0.00%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.003647724 seconds time elapsed                                          ( +-  4.29% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 2 5 0 0' (25 runs):
+
+           470,575      cache-references          #   38.152 M/sec                    ( +-  4.68% )  (26.23%)
+             4,106      cache-misses              #    0.873 % of all cache refs      ( +- 22.08% )  (83.22%)
+                74      faults                    #    0.006 M/sec                    ( +-  0.37% )
+                 1      context-switches          #    0.081 K/sec                  
+         12.334122      cpu-clock (msec)          #    1.884 CPUs utilized            ( +-  4.23% )
+           199,315      offcore_requests.all_data_rd #   16.160 M/sec                    ( +-  3.89% )  (99.98%)
+        23,962,433      instructions                                                                                     ( +-  1.71% )
+     <not counted>      L1-dcache-loads                                               ( +- 16.07% )  (16.78%)
+     <not counted>      L1-dcache-load-misses                                         ( +-100.00% )  (0.02%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.006547107 seconds time elapsed                                          ( +-  4.33% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 3 5 0 0' (25 runs):
+
+         1,091,706      cache-references          #   39.097 M/sec                    ( +-  3.88% )  (22.92%)
+             4,915      cache-misses              #    0.450 % of all cache refs      ( +- 23.95% )  (65.77%)
+                76      faults                    #    0.003 M/sec                    ( +-  0.40% )
+                 1      context-switches          #    0.039 K/sec                    ( +-  5.13% )
+         27.922662      cpu-clock (msec)          #    2.867 CPUs utilized            ( +-  2.18% )
+           547,442      offcore_requests.all_data_rd #   19.606 M/sec                    ( +-  2.29% )  (97.20%)
+        40,344,162      instructions                                                                                     ( +-  1.48% )
+        20,143,607      L1-dcache-loads           #  721.407 M/sec                    ( +-  1.62% )  (34.23%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 32.87% )  (2.80%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.009737961 seconds time elapsed                                          ( +-  2.24% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 4 5 0 0' (25 runs):
+
+         1,594,068      cache-references          #   44.927 M/sec                    ( +-  5.26% )  (21.46%)
+             6,703      cache-misses              #    0.421 % of all cache refs      ( +- 19.43% )  (66.24%)
+                78      faults                    #    0.002 M/sec                    ( +-  0.37% )
+                 1      context-switches          #    0.036 K/sec                    ( +- 15.31% )
+         35.481405      cpu-clock (msec)          #    3.790 CPUs utilized            ( +-  2.81% )
+         1,178,286      offcore_requests.all_data_rd #   33.209 M/sec                    ( +-  2.75% )  (96.59%)
+        49,813,162      instructions                                                                                     ( +-  1.29% )  (99.69%)
+     <not counted>      L1-dcache-loads                                               ( +-  4.51% )  (33.76%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 39.12% )  (3.39%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.009361669 seconds time elapsed                                          ( +-  3.03% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 5 5 0 0' (25 runs):
+
+         1,460,656      cache-references          #   36.369 M/sec                    ( +-  2.96% )  (26.27%)
+             7,582      cache-misses              #    0.519 % of all cache refs      ( +- 23.65% )  (75.68%)
+                81      faults                    #    0.002 M/sec                    ( +-  0.36% )
+                 1      context-switches          #    0.029 K/sec                    ( +-  8.15% )
+         40.162444      cpu-clock (msec)          #    4.704 CPUs utilized            ( +-  2.99% )
+           911,191      offcore_requests.all_data_rd #   22.688 M/sec                    ( +-  2.50% )  (97.85%)
+        56,205,603      instructions                                                                                     ( +-  1.25% )  (99.96%)
+        28,117,468      L1-dcache-loads           #  700.094 M/sec                    ( +-  4.51% )  (24.19%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 72.28% )  (2.09%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.008537275 seconds time elapsed                                          ( +-  3.27% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 6 5 0 0' (25 runs):
+
+         1,765,002      cache-references          #   32.185 M/sec                    ( +-  7.59% )  (21.41%)
+             8,545      cache-misses              #    0.484 % of all cache refs      ( +- 10.84% )  (64.11%)
+                83      faults                    #    0.002 M/sec                    ( +-  0.34% )
+                 2      context-switches          #    0.034 K/sec                    ( +- 14.27% )
+         54.839133      cpu-clock (msec)          #    5.631 CPUs utilized            ( +-  4.19% )
+         1,119,415      offcore_requests.all_data_rd #   20.413 M/sec                    ( +-  4.19% )  (94.33%)
+        61,570,560      instructions                                                                                     ( +-  2.02% )  (98.99%)
+        28,533,100      L1-dcache-loads           #  520.305 M/sec                    ( +-  5.16% )  (32.28%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 33.62% )  (5.37%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.009739548 seconds time elapsed                                          ( +-  3.94% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 7 5 0 0' (25 runs):
+
+         2,675,535      cache-references          #   39.398 M/sec                    ( +-  4.74% )  (18.12%)
+            13,684      cache-misses              #    0.511 % of all cache refs      ( +-  9.82% )  (58.05%)
+                85      faults                    #    0.001 M/sec                    ( +-  0.31% )
+                 2      context-switches          #    0.026 K/sec                    ( +- 14.40% )
+         67.910968      cpu-clock (msec)          #    6.421 CPUs utilized            ( +-  3.69% )
+         2,030,421      offcore_requests.all_data_rd #   29.898 M/sec                    ( +-  4.90% )  (90.13%)
+        76,558,946      instructions                                                                                     ( +-  3.01% )  (99.78%)
+     <not counted>      L1-dcache-loads                                               ( +-  6.34% )  (37.40%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 15.64% )  (9.18%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.010576803 seconds time elapsed                                          ( +-  3.41% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 8 5 0 0' (25 runs):
+
+         1,685,771      cache-references          #   28.268 M/sec                    ( +-  4.04% )  (30.69%)
+            10,679      cache-misses              #    0.633 % of all cache refs      ( +- 12.17% )  (76.59%)
+                88      faults                    #    0.001 M/sec                    ( +-  0.34% )
+                 3      context-switches          #    0.051 K/sec                    ( +-  6.97% )
+         59.634774      cpu-clock (msec)          #    6.829 CPUs utilized            ( +-  3.92% )
+         1,344,249      offcore_requests.all_data_rd #   22.541 M/sec                    ( +-  5.65% )  (97.66%)
+        78,800,145      instructions                                                                                     ( +-  2.43% )  (99.99%)
+        33,057,233      L1-dcache-loads           #  554.328 M/sec                    ( +-  5.71% )  (21.31%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 48.64% )  (2.32%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.008732606 seconds time elapsed                                          ( +-  2.94% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 9 5 0 0' (25 runs):
+
+         2,147,507      cache-references          #   30.095 M/sec                    ( +-  6.62% )  (21.02%)
+            12,924      cache-misses              #    0.602 % of all cache refs      ( +- 12.13% )  (62.53%)
+                90      faults                    #    0.001 M/sec                    ( +-  0.27% )
+                 5      context-switches          #    0.072 K/sec                    ( +-  6.41% )
+         71.358455      cpu-clock (msec)          #    7.115 CPUs utilized            ( +-  4.47% )
+         1,680,696      offcore_requests.all_data_rd #   23.553 M/sec                    ( +-  6.54% )  (92.96%)
+        84,384,538      instructions                                                                                     ( +-  2.75% )  (99.62%)
+        36,394,922      L1-dcache-loads           #  510.030 M/sec                    ( +-  3.26% )  (35.37%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 28.11% )  (6.67%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.010029771 seconds time elapsed                                          ( +-  3.46% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 10 5 0 0' (25 runs):
+
+         1,747,100      cache-references          #   25.693 M/sec                    ( +-  9.92% )  (23.37%)
+            13,757      cache-misses              #    0.787 % of all cache refs      ( +-  9.77% )  (66.74%)
+                92      faults                    #    0.001 M/sec                    ( +-  0.30% )
+                 6      context-switches          #    0.085 K/sec                    ( +-  6.44% )
+         67.999003      cpu-clock (msec)          #    7.118 CPUs utilized            ( +-  7.35% )
+           940,802      offcore_requests.all_data_rd #   13.836 M/sec                    ( +-  6.95% )  (91.86%)
+       116,767,369      instructions                                                                                     ( +-  7.44% )  (96.93%)
+        53,071,304      L1-dcache-loads           #  780.472 M/sec                    ( +-  8.98% )  (31.68%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 44.18% )  (7.73%)
+     <not counted>      LLC-loads                                                     ( +-100.00% )  (1.22%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         ( +-100.00% )  (0.98%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.009553523 seconds time elapsed                                          ( +-  6.92% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 11 5 0 0' (25 runs):
+
+         1,984,987      cache-references          #   28.600 M/sec                    ( +- 10.17% )  (26.62%)
+            14,840      cache-misses              #    0.748 % of all cache refs      ( +-  7.62% )  (68.81%)
+                95      faults                    #    0.001 M/sec                    ( +-  0.33% )
+                 7      context-switches          #    0.107 K/sec                    ( +-  3.96% )
+         69.404380      cpu-clock (msec)          #    7.114 CPUs utilized            ( +-  9.87% )
+           946,222      offcore_requests.all_data_rd #   13.633 M/sec                    ( +- 11.23% )  (88.21%)
+       122,555,435      instructions                                                                                     ( +-  8.78% )  (94.77%)
+        49,447,309      L1-dcache-loads           #  712.452 M/sec                    ( +- 12.35% )  (28.68%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 42.12% )  (11.03%)
+     <not counted>      LLC-loads                                                     ( +- 69.72% )  (1.93%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         ( +- 75.03% )  (1.45%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.009756157 seconds time elapsed                                          ( +-  9.13% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 12 5 0 0' (25 runs):
+
+         1,879,939      cache-references          #   28.922 M/sec                    ( +-  6.52% )  (23.17%)
+            16,678      cache-misses              #    0.887 % of all cache refs      ( +-  8.12% )  (68.97%)
+                96      faults                    #    0.001 M/sec                    ( +-  0.26% )
+                 8      context-switches          #    0.128 K/sec                    ( +-  4.69% )
+         64.999490      cpu-clock (msec)          #    7.102 CPUs utilized            ( +-  4.06% )
+         1,013,812      offcore_requests.all_data_rd #   15.597 M/sec                    ( +-  8.64% )  (95.65%)
+       110,684,414      instructions                                                                                     ( +-  4.69% )  (99.53%)
+        51,173,087      L1-dcache-loads           #  787.284 M/sec                    ( +-  4.59% )  (30.41%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 38.37% )  (3.92%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.009152021 seconds time elapsed                                          ( +-  3.65% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 13 5 0 0' (25 runs):
+
+         1,890,031      cache-references          #   29.393 M/sec                    ( +-  7.95% )  (22.88%)
+            18,757      cache-misses              #    0.992 % of all cache refs      ( +-  8.40% )  (69.16%)
+                99      faults                    #    0.002 M/sec                    ( +-  0.32% )
+                 9      context-switches          #    0.137 K/sec                    ( +-  3.71% )
+         64.302894      cpu-clock (msec)          #    7.112 CPUs utilized            ( +-  7.16% )
+           939,874      offcore_requests.all_data_rd #   14.616 M/sec                    ( +-  7.84% )  (93.29%)
+       115,062,365      instructions                                                                                     ( +-  8.33% )  (96.93%)
+        51,710,952      L1-dcache-loads           #  804.178 M/sec                    ( +- 10.91% )  (29.22%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 45.10% )  (6.21%)
+     <not counted>      LLC-loads                                                     ( +-100.00% )  (1.29%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         ( +-100.00% )  (1.28%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.009040945 seconds time elapsed                                          ( +-  6.55% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 14 5 0 0' (25 runs):
+
+         1,742,216      cache-references          #   26.047 M/sec                    ( +-  5.86% )  (22.93%)
+            19,908      cache-misses              #    1.143 % of all cache refs      ( +-  9.06% )  (68.18%)
+               102      faults                    #    0.002 M/sec                    ( +-  0.28% )
+                10      context-switches          #    0.145 K/sec                    ( +-  2.49% )
+         66.888274      cpu-clock (msec)          #    7.248 CPUs utilized            ( +-  4.37% )
+         1,251,003      offcore_requests.all_data_rd #   18.703 M/sec                    ( +-  9.53% )  (94.78%)
+       107,738,741      instructions                                                                                     ( +-  2.72% )  (98.91%)
+        48,093,993      L1-dcache-loads           #  719.020 M/sec                    ( +-  4.34% )  (30.89%)
+           627,354      L1-dcache-load-misses     #    1.30% of all L1-dcache hits    ( +- 40.99% )  (4.84%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.009228670 seconds time elapsed                                          ( +-  3.96% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 15 5 0 0' (25 runs):
+
+         1,393,153      cache-references          #   22.567 M/sec                    ( +-  9.40% )  (22.69%)
+            20,546      cache-misses              #    1.475 % of all cache refs      ( +-  7.53% )  (70.98%)
+               104      faults                    #    0.002 M/sec                    ( +-  0.22% )
+                10      context-switches          #    0.164 K/sec                    ( +-  3.62% )
+         61.732856      cpu-clock (msec)          #    7.186 CPUs utilized            ( +-  3.12% )
+           857,892      offcore_requests.all_data_rd #   13.897 M/sec                    ( +-  9.13% )  (97.70%)
+       111,305,390      instructions                                                                                     ( +-  2.25% )  (99.91%)
+        49,318,287      L1-dcache-loads           #  798.899 M/sec                    ( +-  5.46% )  (28.36%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 50.68% )  (2.07%)
+     <not counted>      LLC-loads                                                     (0.00%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         (0.00%)
+     <not counted>      dTLB-loads                                                    (0.00%)
+     <not counted>      dTLB-load-misses                                              (0.00%)
+     <not counted>      iTLB-loads                                                    (0.00%)
+     <not counted>      iTLB-load-misses                                              (0.00%)
+
+       0.008591109 seconds time elapsed                                          ( +-  2.85% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
+
+ Performance counter stats for './harness.out 16 5 0 0' (25 runs):
+
+         1,794,062      cache-references          #   24.980 M/sec                    ( +- 14.31% )  (18.72%)
+            26,664      cache-misses              #    1.486 % of all cache refs      ( +- 14.62% )  (61.16%)
+               106      faults                    #    0.001 M/sec                    ( +-  0.30% )
+                13      context-switches          #    0.175 K/sec                    ( +-  9.84% )
+         71.818898      cpu-clock (msec)          #    7.164 CPUs utilized            ( +- 13.71% )
+           903,494      offcore_requests.all_data_rd #   12.580 M/sec                    ( +- 14.59% )  (84.75%)
+       138,071,900      instructions                                                                                     ( +- 12.78% )  (88.50%)
+        68,591,024      L1-dcache-loads           #  955.055 M/sec                    ( +- 18.98% )  (30.73%)
+     <not counted>      L1-dcache-load-misses                                         ( +- 53.58% )  (8.92%)
+     <not counted>      LLC-loads                                                     ( +- 72.76% )  (4.15%)
+   <not supported>      LLC-load-misses                                             
+   <not supported>      L1-icache-loads                                             
+     <not counted>      L1-icache-load-misses                                         ( +- 81.57% )  (5.10%)
+     <not counted>      dTLB-loads                                                    ( +- 73.62% )  (2.51%)
+     <not counted>      dTLB-load-misses                                              ( +-100.00% )  (1.59%)
+     <not counted>      iTLB-loads                                                    ( +-100.00% )  (0.48%)
+     <not counted>      iTLB-load-misses                                              ( +-100.00% )  (0.29%)
+
+       0.010024647 seconds time elapsed                                          ( +- 13.10% )
+
+Some events weren't counted. Try disabling the NMI watchdog:
+	echo 0 > /proc/sys/kernel/nmi_watchdog
+	perf stat ...
+	echo 1 > /proc/sys/kernel/nmi_watchdog
