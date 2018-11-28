@@ -18,12 +18,12 @@
 # done
 
 lscpu > machine.info
-gcc -O2 -pthread basic.c -o harness.out
-PREFIX='basic'
-./benchmark.sh ${PREFIX} 16 5 0 0
-./benchmark.sh ${PREFIX} 16 5000 0 0
+#gcc -O2 -pthread basic.c -o harness.out
+#PREFIX='basic'
+#./benchmark.sh ${PREFIX} 16 5 0 0
+#./benchmark.sh ${PREFIX} 16 5000 0 0
 
 make all
 PREFIX='single-core'
-./benchmark.sh ${PREFIX} 16 5 0 0
-./benchmark.sh ${PREFIX} 16 5000 0 0
+./benchmark.sh ${PREFIX} 16 5 1 0
+./benchmark.sh ${PREFIX} 16 5000 1 0
