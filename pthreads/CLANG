@@ -1,0 +1,1 @@
+clang -DNO_LCK ts_swap.c -fsanitize=thread -lpthread && ./a.out
