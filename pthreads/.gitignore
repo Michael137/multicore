@@ -1,0 +1,5 @@
+ts_swap
+ts_swap_reg
+ts_swap_coarse
+ts_swap_fine
+ts_swap_lockfree

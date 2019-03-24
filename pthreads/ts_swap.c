@@ -5,12 +5,12 @@
 
 #include <assert.h>
 #include <inttypes.h>
-
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <xmmintrin.h> // _mm_pause
 
 #define BILLION 1E9
 #define SHARED_MEM_SIZE 16384
@@ -46,6 +46,7 @@ static void raw_swap( int idx1, int idx2 )
  * 		Fine Lock:		lock each individual array element separately
  * 		Region Lock:	lock regions of array
  * 		Lock-free:		no locks, just atomic operations
+ * 		(TODO) Test-and-set: use TAS/TATAS on bit-vector instead of costlier (?) array of semaphores
  */
 
 /*
@@ -76,7 +77,7 @@ static void fine_swap( int idx1, int idx2 )
 /*
  * This implementation locks regions of shared memory
  */
-#define G_REGION_LEN ( SHARED_MEM_SIZE / 100 )
+#define G_REGION_LEN (SHARED_MEM_SIZE / ((SHARED_MEM_SIZE > 1000) ? 100 : 1) )
 static pthread_mutex_t* g_reg_lcks = NULL;
 static void reg_swap( int idx1, int idx2 )
 {
@@ -90,6 +91,20 @@ static void reg_swap( int idx1, int idx2 )
 	pthread_mutex_unlock( &g_reg_lcks[idx2_lck] );
 }
 
+/*
+ * Lock-free implementation
+ */
+static const int no_lck_sentinel = -1;
+static void lock_free_swap( int idx1, int idx2 )
+{
+	int old1 = 0;
+	int old2 = 0;
+	do { _mm_pause(); } while( (old1 = __sync_lock_test_and_set(&g_shared[idx1], no_lck_sentinel)) == -1 );
+	do { _mm_pause(); } while( (old2 = __sync_lock_test_and_set(&g_shared[idx2], no_lck_sentinel)) == -1 );
+	do { if(__sync_bool_compare_and_swap(&g_shared[idx1], no_lck_sentinel, old2)) break; } while(1);
+	do { if(__sync_bool_compare_and_swap(&g_shared[idx2], no_lck_sentinel, old1)) break; } while(1);
+}
+
 static void swap( int idx1, int idx2 )
 {
 #ifdef COARSE_LCK
@@ -98,6 +113,8 @@ static void swap( int idx1, int idx2 )
 	fine_swap( idx1, idx2 );
 #elif REG_LCK
 	reg_swap( idx1, idx2 );
+#elif NO_LCK
+	lock_free_swap( idx1, idx2 );
 #endif
 }
 
