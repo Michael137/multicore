@@ -63,6 +63,9 @@ barrier::~barrier() {}
 
 void barrier::arrive_and_wait()
 {
+	// NOTE: gcc thread sanitizer complains about a data race; clang doesn't
+	// 		 likely a false positive (https://stackoverflow.com/questions/25068710/gcc-4-9-1-threadsanitizer-as-if-synchronized-via-sleep)
+	// 		 though needs further investigation
 	--d_phase;
 	poll_with_backoff( [this]() -> bool { return d_phase.load() == 0; },
 	                   backoff );
