@@ -21,7 +21,10 @@ struct SafeSRSWBoolReg : public Register<bool>
 	 */
 
 	// CREATORS
-	explicit SafeSRSWBoolReg(bool v) : d_value(v) {}
+	explicit SafeSRSWBoolReg( bool v )
+	    : d_value( v )
+	{
+	}
 	explicit SafeSRSWBoolReg() {}
 
 	// MANIPULATORS
@@ -50,18 +53,31 @@ struct SafeMRSWBoolReg : public Register<bool>
 	 * the last preceding write.
 	 */
 
+   private:
+	// PRIVATE TYPES
+	using table_t = std::array<SafeSRSWBoolReg, SIZE>;
+
+   public:
+	// PUBLIC TYPES
+	using const_iterator = table_t::const_iterator;
+	using iterator       = table_t::iterator;
+
 	// CREATORS
 	explicit SafeMRSWBoolReg();
 
 	// MANIPULATORS
 	void write( bool v ) override;
+	inline iterator begin() noexcept { return d_table.begin(); }
+	inline iterator end() noexcept { return d_table.end(); }
 
 	// ACCESSORS
 	bool read() const noexcept override;
+	inline const_iterator cbegin() const noexcept { return d_table.cbegin(); }
+	inline const_iterator cend() const noexcept { return d_table.cend(); }
 
    private:
 	// PRIVATE DATA
-	std::array<SafeSRSWBoolReg, SIZE> d_table;
+	table_t d_table;
 };
 
 // DEFINITIONS
@@ -83,7 +99,7 @@ bool SafeMRSWBoolReg<SIZE>::read() const noexcept
 template<std::size_t SIZE>
 void SafeMRSWBoolReg<SIZE>::write( bool v )
 {
-	d_table[ThreadID::get()].write(v);
+	d_table[ThreadID::get()].write( v );
 }
 
 } // namespace amp
