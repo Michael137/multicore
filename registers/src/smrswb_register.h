@@ -10,7 +10,7 @@ namespace amp
 struct SafeSRSWBoolReg : public Register<bool>
 {
 	/*
-	 * Implementation of a Single-Reader Single-Writer
+	 * Implementation of a Safe Single-Reader Single-Writer
 	 * Boolean register. Despite its name this is *NOT*
 	 * a thread-safe container but can be used as a
 	 * building block to construct one. Overlapping
