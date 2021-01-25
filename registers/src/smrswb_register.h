@@ -59,8 +59,9 @@ struct SafeMRSWBoolReg : public Register<bool>
 
    public:
 	// PUBLIC TYPES
-	using const_iterator = table_t::const_iterator;
-	using iterator       = table_t::iterator;
+	// NOTE: clang requires typename, gcc doesn't
+	using const_iterator = typename table_t::const_iterator;
+	using iterator       = typename table_t::iterator;
 
 	// CREATORS
 	explicit SafeMRSWBoolReg();
