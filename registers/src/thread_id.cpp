@@ -3,7 +3,8 @@
 
 namespace amp
 {
-std::atomic<uint64_t> ThreadID::d_threadCounter{0};
+// Thread ID 0 is usually special
+std::atomic<uint64_t> ThreadID::d_threadCounter{1};
 
 uint64_t ThreadID::get() noexcept
 {

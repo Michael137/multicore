@@ -1,4 +1,5 @@
-1. more robust threadId generation and indexing
-2. More generic compat barrier
-3. Remove GCC sanitizer noise (not a problem on Clang)
-4. no inline iterator definitions
+* More generic compat barrier
+* Remove GCC sanitizer noise (not a problem on Clang)
+* no inline iterator definitions
+* Dedicated test drivers
+* Better thread index hashing

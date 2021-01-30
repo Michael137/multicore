@@ -1,9 +1,8 @@
-#ifndef RBMRSW_REGISTER_H_IN
-#define RBMRSW_REGISTER_H_IN
+#ifndef RMRSWB_REGISTER_H_IN
+#define RMRSWB_REGISTER_H_IN
 
 #include <register.h>
 #include <smrswb_register.h>
-#include <thread_id.h>
 
 namespace amp
 {
@@ -80,4 +79,4 @@ void RegularMRSWBoolReg<SIZE>::write( bool v )
 }
 } // namespace amp
 
-#endif // RBMRSW_REGISTER_H_IN
+#endif // RMRSWB_REGISTER_H_IN

@@ -93,14 +93,14 @@ SafeMRSWBoolReg<SIZE>::SafeMRSWBoolReg()
 template<std::size_t SIZE>
 bool SafeMRSWBoolReg<SIZE>::read() const noexcept
 {
-	return d_table[ThreadID::get()].read();
+	return d_table[ThreadID::get() % SIZE].read();
 }
 
 // MANIPULATORS
 template<std::size_t SIZE>
 void SafeMRSWBoolReg<SIZE>::write( bool v )
 {
-	d_table[ThreadID::get()].write( v );
+	d_table[ThreadID::get() % SIZE].write( v );
 }
 
 } // namespace amp

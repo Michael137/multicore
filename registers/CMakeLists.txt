@@ -2,6 +2,8 @@ project(registers)
 cmake_minimum_required(VERSION 3.17)
 find_package(Threads)
 
+enable_testing()
+
 option(ENABLE_THREAD_SANITIZER "Enable thread sanitizer" ON)
 option(ENABLE_UB_SANITIZER "Enable undefined behaviour sanitizer" ON)
 
@@ -33,10 +35,15 @@ endif()
 add_subdirectory(src/compat)
 
 add_library(registers src/smrswb_register.cpp src/rmrswb_register.cpp
-                      src/thread_id.cpp)
+                      src/thread_id.cpp src/rmrswm_register.cpp)
 target_link_libraries(registers project_options)
 target_include_directories(registers PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
 add_executable(driver driver.m.cpp)
 target_link_libraries(driver PRIVATE project_options registers compat
                                      ${CMAKE_THREAD_LIBS_INIT})
+
+add_executable(test_rmrswm src/rmrswm_register.t.cpp)
+target_link_libraries(test_rmrswm PRIVATE project_options registers compat
+                                          ${CMAKE_THREAD_LIBS_INIT})
+add_test(NAME test_rmrswm COMMAND test_rmrswm)
